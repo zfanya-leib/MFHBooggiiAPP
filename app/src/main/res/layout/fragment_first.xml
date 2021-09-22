@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".FirstFragment">
+
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="7dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="6dp"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_hr"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:src="@drawable/_724416_activity_healthcare_heart_heartbeat_heartrate_icon"
+        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintTop_toTopOf="@+id/gl_top" />
+
+    <ImageView
+        android:id="@+id/img_eda"
+        android:layout_width="42dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/_566829_emoji_emoticon_emotion_happy_smile_icon"
+        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintTop_toBottomOf="@+id/img_hr" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="BPM"
+        android:textColor="@color/general_text"
+        app:layout_constraintBottom_toBottomOf="@+id/img_hr"
+        app:layout_constraintStart_toEndOf="@+id/img_hr" />
+
+    <TextView
+        android:id="@+id/txt_bpm"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_marginStart="4dp"
+        android:gravity="bottom|end"
+        android:text="60"
+        android:textAlignment="textEnd"
+        android:textColor="@color/general_text"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@id/textView" />
+
+    <TextView
+        android:id="@+id/textViewBPR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="BPR"
+        android:textColor="@color/general_text"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/txt_bpm" />
+
+    <TextView
+        android:id="@+id/txt_bprl"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_marginStart="4dp"
+        android:gravity="bottom|end"
+        android:text="90"
+        android:textAlignment="textEnd"
+        android:textColor="@color/general_text"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewBPR"
+        app:layout_constraintStart_toEndOf="@+id/textViewBPR" />
+
+    <TextView
+        android:id="@+id/txt_bpr_dash"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_marginStart="0dp"
+        android:gravity="bottom|end"
+        android:text="\\"
+        android:textAlignment="textEnd"
+        android:textColor="@color/general_text"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_bprl"
+        app:layout_constraintStart_toEndOf="@+id/txt_bprl" />
+
+    <TextView
+        android:id="@+id/txt_bprr"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_marginStart="0dp"
+        android:gravity="bottom|end"
+        android:text="140"
+        android:textAlignment="textEnd"
+        android:textColor="@color/general_text"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_bpr_dash"
+        app:layout_constraintStart_toEndOf="@+id/txt_bpr_dash" />
+
+    <TextView
+        android:id="@+id/textViewEDA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="EDA"
+        android:textColor="@color/general_text"
+        app:layout_constraintBottom_toBottomOf="@+id/img_eda"
+        app:layout_constraintStart_toEndOf="@+id/img_eda" />
+
+    <ProgressBar
+        android:id="@+id/pb_eda"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="255dp"
+        android:progress="60"
+        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintTop_toBottomOf="@+id/img_eda" />
+
+    <TextView
+        android:id="@+id/txt_eda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="4dp"
+        android:text="14"
+        android:textAlignment="textEnd"
+        android:textColor="@color/general_text"
+        android:textSize="32dp"
+        app:layout_constraintStart_toEndOf="@+id/textViewEDA"
+        app:layout_constraintTop_toBottomOf="@+id/txt_bprr" />
+
+    <ImageButton
+        android:id="@+id/btn_img_sos"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/_902300_emergency_help_location_rescue_sos_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintStart_toEndOf="@+id/txt_eda"
+        app:layout_constraintTop_toTopOf="@+id/gl_top" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pb_eda" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="282dp"
+        android:layout_height="301dp"
+        android:layout_marginTop="8dp"
+        android:cropToPadding="true"
+        android:padding="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/boggii2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <ImageButton
+        android:id="@+id/img_btn_drug"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_211007_capsule_drug_drugs_healthcare_medicine_icon"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_location"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_sos" />
+
+    <ImageButton
+        android:id="@+id/img_btn_location"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_961978_location_map_icon"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_call1"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_drug" />
+
+    <ImageButton
+        android:id="@+id/img_btn_call1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.469"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_location" />
+
+    <ImageButton
+        android:id="@+id/img_btn_call2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.469"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_call1" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="521dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="521dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="565dp" />
+
+    <ImageButton
+        android:id="@+id/btn_img_indoor"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_30102_home_house_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_img_outdoor"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_call2" />
+
+    <ImageButton
+        android:id="@+id/btn_img_outdoor"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_423289_bag_clientele_customer_mall_purchaser_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_indoor"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_img_minor_attack"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_indoor" />
+
+    <ImageButton
+        android:id="@+id/btn_img_minor_attack"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="center"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:src="@drawable/_473826_add_new_plus_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_outdoor"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_img_severe_attack"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_outdoor" />
+
+    <ImageButton
+        android:id="@+id/btn_img_severe_attack"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_473826_add_new_plus_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_minor_attack"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_minor_attack" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="btn_img_indoor" />
+
+    <!--ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="80dp"
+        android:layout_height="84dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/_902300_emergency_help_location_rescue_sos_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_eda"
+        app:layout_constraintTop_toTopOf="@+id/gl_top" /-->
+</androidx.constraintlayout.widget.ConstraintLayout>
