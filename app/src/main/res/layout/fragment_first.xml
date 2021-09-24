@@ -66,7 +66,7 @@
         android:id="@+id/txt_bpm"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="6dp"
         android:gravity="bottom|end"
         android:text="60"
         android:textAlignment="textEnd"
@@ -159,26 +159,29 @@
 
     <ImageButton
         android:id="@+id/btn_img_sos"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="fitXY"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:src="@drawable/_902300_emergency_help_location_rescue_sos_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintHorizontal_bias="0.719"
         app:layout_constraintStart_toEndOf="@+id/txt_eda"
         app:layout_constraintTop_toTopOf="@+id/gl_top" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="409dp"
-        android:layout_height="1dp"
+        android:layout_height="4dp"
         android:layout_marginTop="12dp"
         android:background="?android:attr/listDivider"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_eda" />
+        app:layout_constraintTop_toBottomOf="@+id/pb_eda"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -245,73 +248,70 @@
     <View
         android:id="@+id/divider3"
         android:layout_width="521dp"
-        android:layout_height="1dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:background="?android:attr/listDivider"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/divider6"
         android:layout_width="521dp"
-        android:layout_height="1dp"
+        android:layout_height="4dp"
         android:background="?android:attr/listDivider"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="565dp" />
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="514dp"
+        tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/btn_img_indoor"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="61dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_30102_home_house_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_img_outdoor"
         app:layout_constraintTop_toBottomOf="@+id/img_btn_call2" />
 
     <ImageButton
         android:id="@+id/btn_img_outdoor"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_423289_bag_clientele_customer_mall_purchaser_icon"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_indoor"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_img_minor_attack"
         app:layout_constraintTop_toTopOf="@+id/btn_img_indoor" />
 
     <ImageButton
         android:id="@+id/btn_img_minor_attack"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@color/white"
         android:scaleType="center"
         android:scaleX="1.2"
         android:scaleY="1.2"
         android:src="@drawable/_473826_add_new_plus_icon"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_outdoor"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_img_severe_attack"
         app:layout_constraintTop_toTopOf="@+id/btn_img_outdoor" />
 
     <ImageButton
         android:id="@+id/btn_img_severe_attack"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_473826_add_new_plus_icon"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_minor_attack"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_img_minor_attack" />
 
     <androidx.constraintlayout.widget.Group
@@ -320,15 +320,114 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="btn_img_indoor" />
 
-    <!--ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="80dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="15dp"
-        android:src="@drawable/_902300_emergency_help_location_rescue_sos_icon"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="168dp"
+        android:layout_marginTop="16dp"
+        android:text="פעולות"
+        android:textColor="@color/general_text"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_indoor" />
+
+    <ImageButton
+        android:id="@+id/btn_img_walking"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_09003_sport_walking_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_eda"
-        app:layout_constraintTop_toTopOf="@+id/gl_top" /-->
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_img_driving"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <ImageButton
+        android:id="@+id/btn_img_driving"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_269524_drive_driver_driving_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_walking"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_img_incar"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_walking" />
+
+    <ImageButton
+        android:id="@+id/btn_img_incar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/car_pool_car_ride_sharing_svgrepo_com"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_driving"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_img_media"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_driving" />
+
+    <ImageButton
+        android:id="@+id/btn_img_media"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/movie_svgrepo_com"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_incar"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_incar" />
+
+    <ImageButton
+        android:id="@+id/btn_img_sleep"
+        android:layout_width="67dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/sleep_in_bed_sleep_nap_rest_svgrepo_com"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_driving"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_driving"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/btn_img_resting"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="28dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/resting_svgrepo_com"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_sleep"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_sleep"
+        app:layout_constraintVertical_bias="0.044" />
+
+    <ImageButton
+        android:id="@+id/btn_img_settings"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/settings_svgrepo_com"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_severe_attack"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_severe_attack" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="4dp"
+        android:layout_height="430dp"
+        android:layout_marginTop="-13dp"
+        android:layout_marginEnd="6dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/img_btn_location"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_sos"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

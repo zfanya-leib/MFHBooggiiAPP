@@ -22,4 +22,17 @@
     <style name="Theme.MyApplicationActivityTest.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MyApplicationActivityTest.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.MyApplicationActivityTest.Fullscreen" parent="Theme.MyApplicationActivityTest">
+        <item name="android:actionBarStyle">
+            @style/Widget.Theme.MyApplicationActivityTest.ActionBar.Fullscreen
+        </item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.MyApplicationActivityTest.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
 </resources>
