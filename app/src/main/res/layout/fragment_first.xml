@@ -37,51 +37,56 @@
 
     <ImageView
         android:id="@+id/img_hr"
-        android:layout_width="39dp"
-        android:layout_height="39dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/_724416_activity_healthcare_heart_heartbeat_heartrate_icon"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toTopOf="@+id/gl_top" />
 
     <ImageView
         android:id="@+id/img_eda"
-        android:layout_width="42dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/_566829_emoji_emoticon_emotion_happy_smile_icon"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_hr" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_width="51dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="20dp"
+        android:gravity="bottom|left"
         android:text="BPM"
         android:textColor="@color/general_text"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/img_hr"
-        app:layout_constraintStart_toEndOf="@+id/img_hr" />
+        app:layout_constraintStart_toEndOf="@+id/img_hr"
+        app:layout_constraintTop_toTopOf="@+id/gl_top"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/txt_bpm"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:layout_marginStart="6dp"
-        android:gravity="bottom|end"
+        android:gravity="bottom"
         android:text="60"
         android:textAlignment="textEnd"
         android:textColor="@color/general_text"
         android:textSize="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@id/textView" />
+        app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <TextView
         android:id="@+id/textViewBPR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="80dp"
         android:text="BPR"
         android:textColor="@color/general_text"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/txt_bpm" />
 
@@ -89,7 +94,7 @@
         android:id="@+id/txt_bprl"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
         android:gravity="bottom|end"
         android:text="90"
         android:textAlignment="textEnd"
@@ -128,9 +133,10 @@
         android:id="@+id/textViewEDA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="16dp"
         android:text="EDA"
         android:textColor="@color/general_text"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/img_eda"
         app:layout_constraintStart_toEndOf="@+id/img_eda" />
 
@@ -139,6 +145,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:minWidth="255dp"
         android:progress="60"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
@@ -148,142 +155,41 @@
         android:id="@+id/txt_eda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
         android:text="14"
         android:textAlignment="textEnd"
         android:textColor="@color/general_text"
         android:textSize="32dp"
-        app:layout_constraintStart_toEndOf="@+id/textViewEDA"
-        app:layout_constraintTop_toBottomOf="@+id/txt_bprr" />
+        app:layout_constraintBottom_toBottomOf="@+id/textViewEDA"
+        app:layout_constraintStart_toEndOf="@+id/textViewEDA" />
 
     <ImageButton
         android:id="@+id/btn_img_sos"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:scaleType="fitXY"
-        android:layout_marginTop="16dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
         android:src="@drawable/_902300_emergency_help_location_rescue_sos_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.719"
-        app:layout_constraintStart_toEndOf="@+id/txt_eda"
-        app:layout_constraintTop_toTopOf="@+id/gl_top" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="409dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="12dp"
-        android:background="?android:attr/listDivider"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_eda"
-        tools:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="282dp"
-        android:layout_height="301dp"
-        android:layout_marginTop="8dp"
-        android:cropToPadding="true"
-        android:padding="1dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/boggii2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-    <ImageButton
-        android:id="@+id/img_btn_drug"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="40dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/_211007_capsule_drug_drugs_healthcare_medicine_icon"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/img_btn_location"
-        app:layout_constraintTop_toBottomOf="@+id/btn_img_sos" />
-
-    <ImageButton
-        android:id="@+id/img_btn_location"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/_961978_location_map_icon"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/img_btn_call1"
-        app:layout_constraintTop_toBottomOf="@+id/img_btn_drug" />
-
-    <ImageButton
-        android:id="@+id/img_btn_call1"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.469"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/img_btn_location" />
-
-    <ImageButton
-        android:id="@+id/img_btn_call2"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.469"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/img_btn_call1" />
-
-    <View
-        android:id="@+id/divider3"
-        android:layout_width="521dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:background="?android:attr/listDivider"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:visibility="visible" />
-
-    <View
-        android:id="@+id/divider6"
-        android:layout_width="521dp"
-        android:layout_height="4dp"
-        android:background="?android:attr/listDivider"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="514dp"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="@+id/divider3"
+        tools:layout_editor_absoluteX="335dp" />
 
     <ImageButton
         android:id="@+id/btn_img_indoor"
         android:layout_width="61dp"
         android:layout_height="58dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="32dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_30102_home_house_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_btn_call2" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_sos"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_sos" />
 
     <ImageButton
         android:id="@+id/btn_img_outdoor"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_423289_bag_clientele_customer_mall_purchaser_icon"
@@ -294,7 +200,7 @@
         android:id="@+id/btn_img_minor_attack"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="center"
         android:scaleX="1.2"
@@ -307,12 +213,108 @@
         android:id="@+id/btn_img_severe_attack"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_473826_add_new_plus_icon"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_minor_attack"
         app:layout_constraintTop_toTopOf="@+id/btn_img_minor_attack" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="409dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="32dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/textViewEDA"
+        tools:layout_editor_absoluteX="6dp"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="304dp"
+        android:layout_height="345dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:cropToPadding="true"
+        android:padding="1dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/boggii2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pb_eda" />
+
+    <ImageButton
+        android:id="@+id/img_btn_drug"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_211007_capsule_drug_drugs_healthcare_medicine_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/divider2" />
+
+    <ImageButton
+        android:id="@+id/img_btn_call2"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
+        app:layout_constraintEnd_toEndOf="@+id/img_btn_call1"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_call1"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_call1" />
+
+    <ImageButton
+        android:id="@+id/img_btn_call1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
+        app:layout_constraintEnd_toEndOf="@+id/img_btn_location"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_location"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_location" />
+
+    <ImageButton
+        android:id="@+id/img_btn_location"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_961978_location_map_icon"
+        app:layout_constraintEnd_toEndOf="@+id/img_btn_drug"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_drug"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_drug" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="400dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="400dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_sos"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group"
@@ -320,114 +322,46 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="btn_img_indoor" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="16dp"
-        android:text="פעולות"
-        android:textColor="@color/general_text"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
-        app:layout_constraintTop_toBottomOf="@+id/btn_img_indoor" />
-
-    <ImageButton
-        android:id="@+id/btn_img_walking"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/_09003_sport_walking_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_img_driving"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <ImageButton
-        android:id="@+id/btn_img_driving"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/_269524_drive_driver_driving_icon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_walking"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_img_incar"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_walking" />
-
-    <ImageButton
-        android:id="@+id/btn_img_incar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/car_pool_car_ride_sharing_svgrepo_com"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_driving"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_img_media"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_driving" />
-
-    <ImageButton
-        android:id="@+id/btn_img_media"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/movie_svgrepo_com"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_incar"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_incar" />
-
-    <ImageButton
-        android:id="@+id/btn_img_sleep"
-        android:layout_width="67dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/sleep_in_bed_sleep_nap_rest_svgrepo_com"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btn_img_driving"
-        app:layout_constraintTop_toBottomOf="@+id/btn_img_driving"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageButton
-        android:id="@+id/btn_img_resting"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="28dp"
-        android:backgroundTint="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/resting_svgrepo_com"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_sleep"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_sleep"
-        app:layout_constraintVertical_bias="0.044" />
-
     <ImageButton
         android:id="@+id/btn_img_settings"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/settings_svgrepo_com"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_severe_attack"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_severe_attack" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <View
         android:id="@+id/divider2"
         android:layout_width="4dp"
-        android:layout_height="430dp"
-        android:layout_marginTop="-13dp"
-        android:layout_marginEnd="6dp"
+        android:layout_height="340dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:background="?android:attr/listDivider"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/img_btn_location"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_sos"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
         tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/btn_events_open"
+        android:layout_width="285dp"
+        android:layout_height="66dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="add"
+        android:text="אירועים"
+        android:textColor="@color/general_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_settings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_settings" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

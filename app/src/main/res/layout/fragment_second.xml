@@ -7,21 +7,193 @@
     tools:context=".SecondFragment">
 
     <TextView
-        android:id="@+id/textview_second"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/button_second"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="60dp"
+        android:text="פעולות"
+        android:textColor="@color/general_text"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_second"
+    <ImageButton
+        android:id="@+id/btn_img_driving"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_269524_drive_driver_driving_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_walking"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_walking" />
+
+    <ImageButton
+        android:id="@+id/btn_img_sleep"
+        android:layout_width="56dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/sleep_in_bed_sleep_nap_rest_svgrepo_com"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_walking" />
+
+    <ImageButton
+        android:id="@+id/btn_img_media"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/movie_svgrepo_com"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_incar"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_incar" />
+
+    <ImageButton
+        android:id="@+id/btn_img_incar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/car_pool_car_ride_sharing_svgrepo_com"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_driving"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_driving" />
+
+    <ImageButton
+        android:id="@+id/btn_img_walking"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_09003_sport_walking_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <ImageButton
+        android:id="@+id/btn_img_resting"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/resting_svgrepo_com"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_sleep"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_sleep" />
+
+    <ImageButton
+        android:id="@+id/img_btn_drug"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_211007_capsule_drug_drugs_healthcare_medicine_icon"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_resting"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_resting" />
+
+    <ImageButton
+        android:id="@+id/img_wake_up"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_205209_bright_day_light_sun_icon"
+        app:layout_constraintEnd_toStartOf="@+id/img_btn_drug"
+        app:layout_constraintTop_toTopOf="@+id/img_btn_drug" />
+
+    <TextView
+        android:id="@+id/txtWalk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/previous"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_second" />
+        android:layout_marginTop="1dp"
+        android:text="הולך"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_walking"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_walking"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_walking" />
+
+    <TextView
+        android:id="@+id/txtDriving"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="נוהג"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_driving"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_driving"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_driving" />
+
+    <TextView
+        android:id="@+id/txtVihicale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="ברכב"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_incar"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_incar"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_incar" />
+
+    <TextView
+        android:id="@+id/txtmedia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="מדיה"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_media"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_media"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_media" />
+
+    <TextView
+        android:id="@+id/txtsleep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="ישן"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_sleep"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_sleep"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_sleep" />
+
+    <TextView
+        android:id="@+id/txtrest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="נח"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_resting"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_resting"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_resting" />
+
+    <TextView
+        android:id="@+id/txtmedocone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="תרופה"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/img_btn_drug"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_drug"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_drug" />
+
+    <TextView
+        android:id="@+id/txtmewakeup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="יקיצה"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/img_wake_up"
+        app:layout_constraintStart_toStartOf="@+id/img_wake_up"
+        app:layout_constraintTop_toBottomOf="@+id/img_wake_up" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
