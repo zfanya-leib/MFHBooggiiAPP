@@ -28,4 +28,9 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="activity_report">דיווח פעילות</string>
+    <string name="back_btn">חזור</string>
+    <string name="save_btn">שמור</string>
 </resources>

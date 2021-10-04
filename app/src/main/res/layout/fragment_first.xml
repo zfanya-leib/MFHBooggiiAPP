@@ -73,7 +73,6 @@
         android:layout_height="53dp"
         android:gravity="bottom"
         android:text="60"
-        android:textAlignment="textEnd"
         android:textColor="@color/general_text"
         android:textSize="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
@@ -146,7 +145,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:minWidth="255dp"
+        android:minWidth="400dp"
         android:progress="60"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_eda" />
@@ -165,31 +164,33 @@
 
     <ImageButton
         android:id="@+id/btn_img_sos"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_902300_emergency_help_location_rescue_sos_icon"
-        app:layout_constraintTop_toTopOf="@+id/divider3"
-        tools:layout_editor_absoluteX="335dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_call2" />
 
     <ImageButton
         android:id="@+id/btn_img_indoor"
-        android:layout_width="61dp"
-        android:layout_height="58dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_30102_home_house_icon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_sos"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_sos" />
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/divider3" />
 
     <ImageButton
         android:id="@+id/btn_img_outdoor"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="4dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_423289_bag_clientele_customer_mall_purchaser_icon"
@@ -198,9 +199,9 @@
 
     <ImageButton
         android:id="@+id/btn_img_minor_attack"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="4dp"
         android:backgroundTint="@color/white"
         android:scaleType="center"
         android:scaleX="1.2"
@@ -211,9 +212,9 @@
 
     <ImageButton
         android:id="@+id/btn_img_severe_attack"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="4dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_473826_add_new_plus_icon"
@@ -222,44 +223,59 @@
 
     <View
         android:id="@+id/divider"
-        android:layout_width="409dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="32dp"
-        android:background="?android:attr/listDivider"
+        android:layout_width="400dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="44dp"
+        android:background="@color/light_blue_900"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewEDA"
-        tools:layout_editor_absoluteX="6dp"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="304dp"
         android:layout_height="345dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
         android:cropToPadding="true"
         android:padding="1dp"
         android:scaleType="fitXY"
         android:src="@drawable/boggii2"
+        app:layout_constraintEnd_toStartOf="@+id/divider2"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_eda" />
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <VideoView
+        android:id="@+id/video_player"
+        android:layout_width="304dp"
+        android:layout_height="345dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/divider2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"/>
 
     <ImageButton
         android:id="@+id/img_btn_drug"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_211007_capsule_drug_drugs_healthcare_medicine_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/divider2" />
+        app:layout_constraintTop_toTopOf="@+id/divider" />
 
     <ImageButton
         android:id="@+id/img_btn_call2"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
@@ -270,8 +286,8 @@
 
     <ImageButton
         android:id="@+id/img_btn_call1"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
@@ -282,8 +298,8 @@
 
     <ImageButton
         android:id="@+id/img_btn_location"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
@@ -294,26 +310,26 @@
 
     <View
         android:id="@+id/divider3"
-        android:layout_width="400dp"
-        android:layout_height="4dp"
+        android:layout_width="300dp"
+        android:layout_height="2dp"
         android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
+        android:background="@color/light_blue_900"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:visibility="visible" />
 
     <View
         android:id="@+id/divider6"
         android:layout_width="400dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/light_blue_900"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_img_sos"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_indoor"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Group
@@ -336,19 +352,19 @@
 
     <View
         android:id="@+id/divider2"
-        android:layout_width="4dp"
-        android:layout_height="340dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="2dp"
+        android:layout_height="430dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:background="?android:attr/listDivider"
+        android:background="@color/light_blue_900"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/img_btn_location"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/pb_eda"
         tools:visibility="visible" />
 
     <Button
         android:id="@+id/btn_events_open"
-        android:layout_width="285dp"
+        android:layout_width="300dp"
         android:layout_height="66dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -357,7 +373,8 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/white"
         android:backgroundTintMode="add"
-        android:text="אירועים"
+        android:text="@string/activity_report"
+        android:textSize="20sp"
         android:textColor="@color/general_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_settings"
