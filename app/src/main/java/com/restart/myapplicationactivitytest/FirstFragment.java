@@ -1,5 +1,10 @@
 package com.restart.myapplicationactivitytest;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,11 +20,13 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
+import controllers.EventsHandler;
+
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
-    private boolean videoToggle = false;
-    private MediaController mediaController;
+    private EventsHandler handler;
+
 
     @Override
     public View onCreateView(
@@ -28,7 +35,7 @@ public class FirstFragment extends Fragment {
     ) {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
-        mediaController= new MediaController(getContext());
+        this.handler = new EventsHandler(getActivity());
         return binding.getRoot();
 
     }
@@ -54,26 +61,32 @@ public class FirstFragment extends Fragment {
         binding.btnImgSos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!videoToggle) {
-                    videoToggle=true;
-                    ImageView img = (ImageView) getActivity().findViewById(R.id.imageView);
-                    img.setVisibility(View.INVISIBLE);
-                    VideoView video = (VideoView) getActivity().findViewById(R.id.video_player);
-                    video.setVideoURI(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.a));
-                    video.setVisibility(View.VISIBLE);
-                    video.setMediaController(mediaController);
-                    video.start();
-                }
-                else{
-                    videoToggle=false;
-                    VideoView video = (VideoView) getActivity().findViewById(R.id.video_player);
-                    video.stopPlayback();
-                    video.setVisibility(View.INVISIBLE);
-                    ImageView img = (ImageView) getActivity().findViewById(R.id.imageView);
-                    img.setVisibility(View.VISIBLE);
-                }
+                handler.onSOS();
             }
         });
+
+        binding.imgBtnCall1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.makePhoneCall();
+            }
+        });
+
+        binding.imgBtnDrug.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.onDrugTaken();
+            }
+        });
+
+        binding.imgBtnLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.sendLocation();
+            }
+        });
+
+
     }
 
     @Override
