@@ -71,6 +71,20 @@ public class EventsHandler implements LocationListener {
                 this.sosRingtone.stop();
             } else {
                 this.currentActivity.findViewById(R.id.btn_img_sos).getAnimation().cancel();
+
+                if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
+                }
+
+                if(this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+                }
+
+                if(this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation().cancel();
+                }
+
+
                 this.videoToggle = false;
                 VideoView video = (VideoView) this.currentActivity.findViewById(R.id.video_player);
                 video.stopPlayback();
@@ -82,11 +96,13 @@ public class EventsHandler implements LocationListener {
     }
 
     public void makePhoneCall() {
-        Intent i = new Intent(Intent.ACTION_CALL);
-        i.setData(Uri.parse("tel:+972528456649"));
-        this.currentActivity.startActivity(i);
+        if( this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
+            Intent i = new Intent(Intent.ACTION_CALL);
+            i.setData(Uri.parse("tel:+972528456649"));
+            this.currentActivity.startActivity(i);
 
-        this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+            this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+        }
     }
 
     public void onLocationChanged(Location location) {
@@ -102,7 +118,8 @@ public class EventsHandler implements LocationListener {
     }
 
     public void sendLocation() {
-        if( this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().hasStarted()) {
+        if( this.currentActivity.findViewById(R.id.img_btn_location).getAnimation() != null &&
+                this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().hasStarted()) {
             if (ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -116,7 +133,6 @@ public class EventsHandler implements LocationListener {
             this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
             this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
         }
-
     }
 
     public void stopRingtone(){
@@ -126,7 +142,8 @@ public class EventsHandler implements LocationListener {
     }
 
     public void onDrugTaken(){
-        this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation().cancel();
+        if(this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation() != null)
+            this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation().cancel();
     }
 
     private AlphaAnimation getAnimation(){
