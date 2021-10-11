@@ -10,6 +10,8 @@ import android.location.LocationManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -31,6 +33,9 @@ public class EventsHandler implements LocationListener {
     private boolean videoToggle = false;
     private Ringtone sosRingtone;
     private LocationManager locationManager;
+    // Get instance of Vibrator from current Context
+    private Vibrator vibrator;
+
 
     public EventsHandler(FragmentActivity activity) {
         this.currentActivity = activity;
@@ -40,7 +45,7 @@ public class EventsHandler implements LocationListener {
         this.sosRingtone = RingtoneManager.getRingtone(this.currentActivity, notification);
 
         this.locationManager = (LocationManager) this.currentActivity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
+        this.vibrator = (Vibrator) this.currentActivity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
 
@@ -58,6 +63,10 @@ public class EventsHandler implements LocationListener {
             this.sosRingtone.play();
             this.sosRingtone.setLooping(true);
 
+
+            // Vibrate for 400 milliseconds
+            this.vibrator.vibrate(VibrationEffect.createOneShot(20000,255));
+
             this.videoToggle = true;
             ImageView img = (ImageView) this.currentActivity.findViewById(R.id.imageView);
             img.setVisibility(View.INVISIBLE);
@@ -69,6 +78,7 @@ public class EventsHandler implements LocationListener {
         } else {
             if (this.sosRingtone.isPlaying()) {
                 this.sosRingtone.stop();
+                this.vibrator.cancel();
             } else {
                 this.currentActivity.findViewById(R.id.btn_img_sos).getAnimation().cancel();
 
@@ -115,6 +125,8 @@ public class EventsHandler implements LocationListener {
         smsBody.append(",");
         smsBody.append(location.getLongitude());
         smsManager.sendTextMessage("+972528456649", null, smsBody.toString(), null, null);
+
+        this.locationManager.removeUpdates(this);
     }
 
     public void sendLocation() {

@@ -21,11 +21,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
 import controllers.EventsHandler;
+import models.SettingsModel;
 
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
     private EventsHandler handler;
+    private SettingsModel settings;
 
 
     @Override
@@ -36,6 +38,7 @@ public class FirstFragment extends Fragment {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         this.handler = new EventsHandler(getActivity());
+        this.settings = new SettingsModel();
         return binding.getRoot();
 
     }
@@ -53,6 +56,8 @@ public class FirstFragment extends Fragment {
         binding.btnImgSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("message", "From Activity");
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SettingsFragment);
             }
