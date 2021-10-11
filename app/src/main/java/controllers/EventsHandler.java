@@ -3,10 +3,12 @@ package controllers;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -23,8 +25,13 @@ import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.preference.PreferenceManager;
 
 import com.restart.myapplicationactivitytest.R;
+
+import common.Constants;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class EventsHandler implements LocationListener {
 
@@ -41,7 +48,7 @@ public class EventsHandler implements LocationListener {
         this.currentActivity = activity;
         mediaController = new MediaController(activity);
 
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri notification = Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + R.raw.emergency_alarm);
         this.sosRingtone = RingtoneManager.getRingtone(this.currentActivity, notification);
 
         this.locationManager = (LocationManager) this.currentActivity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
@@ -56,6 +63,7 @@ public class EventsHandler implements LocationListener {
             this.currentActivity.findViewById(R.id.btn_img_sos).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_drug).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_call1).startAnimation(getAnimation());
+            this.currentActivity.findViewById(R.id.img_btn_call2).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_location).startAnimation(getAnimation());
 
 
@@ -78,7 +86,10 @@ public class EventsHandler implements LocationListener {
         } else {
             if (this.sosRingtone.isPlaying()) {
                 this.sosRingtone.stop();
-                this.vibrator.cancel();
+
+                if( this.vibrator!= null) {
+                    this.vibrator.cancel();
+                }
             } else {
                 this.currentActivity.findViewById(R.id.btn_img_sos).getAnimation().cancel();
 
@@ -88,6 +99,10 @@ public class EventsHandler implements LocationListener {
 
                 if(this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
                     this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+                }
+
+                if(this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation().cancel();
                 }
 
                 if(this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation()!=null) {
@@ -105,26 +120,49 @@ public class EventsHandler implements LocationListener {
         }
     }
 
-    public void makePhoneCall() {
+    public void makePhoneCall1() {
         if( this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
-            Intent i = new Intent(Intent.ACTION_CALL);
-            i.setData(Uri.parse("tel:+972528456649"));
-            this.currentActivity.startActivity(i);
+            SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
+            String phoneNumber = prefs.getString(Constants.PHONE_CALL_1,"");
+            if( phoneNumber != ""){
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse(String.format("tel:%s",phoneNumber)));
+                this.currentActivity.startActivity(i);
 
-            this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+                this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+            }
+        }
+    }
+
+    public void makePhoneCall2() {
+        if( this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation()!=null) {
+            SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
+            String phoneNumber = prefs.getString(Constants.PHONE_CALL_2,"");
+            if( phoneNumber != ""){
+                Intent i = new Intent(Intent.ACTION_CALL);
+                i.setData(Uri.parse(String.format("tel:%s",phoneNumber)));
+                this.currentActivity.startActivity(i);
+
+                this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation().cancel();
+            }
         }
     }
 
     public void onLocationChanged(Location location) {
-        SmsManager smsManager = SmsManager.getDefault();
-        StringBuffer smsBody = new StringBuffer();
-        smsBody.append("please come to help me ASAP!!!");
-        smsBody.append("\r\n");
-        smsBody.append("http://maps.google.com?q=");
-        smsBody.append(location.getLatitude());
-        smsBody.append(",");
-        smsBody.append(location.getLongitude());
-        smsManager.sendTextMessage("+972528456649", null, smsBody.toString(), null, null);
+        SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
+
+        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION,"");
+        if(phoneNumber != ""){
+            SmsManager smsManager = SmsManager.getDefault();
+            StringBuffer smsBody = new StringBuffer();
+            smsBody.append("please come to help me ASAP!!!");
+            smsBody.append("\r\n");
+            smsBody.append("http://maps.google.com?q=");
+            smsBody.append(location.getLatitude());
+            smsBody.append(",");
+            smsBody.append(location.getLongitude());
+            smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), null, null);
+        }
 
         this.locationManager.removeUpdates(this);
     }
@@ -133,13 +171,6 @@ public class EventsHandler implements LocationListener {
         if( this.currentActivity.findViewById(R.id.img_btn_location).getAnimation() != null &&
                 this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().hasStarted()) {
             if (ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
             this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -150,6 +181,9 @@ public class EventsHandler implements LocationListener {
     public void stopRingtone(){
         if(this.sosRingtone != null){
             this.sosRingtone.stop();
+        }
+        if(this.vibrator != null){
+            this.vibrator.cancel();
         }
     }
 
