@@ -40,7 +40,6 @@ public class EventsHandler implements LocationListener {
     private boolean videoToggle = false;
     private Ringtone sosRingtone;
     private LocationManager locationManager;
-    // Get instance of Vibrator from current Context
     private Vibrator vibrator;
 
 
