@@ -33,4 +33,5 @@
     <string name="activity_report">דיווח פעילות</string>
     <string name="back_btn">חזור</string>
     <string name="save_btn">שמור</string>
+    <string name="eda_text">EDA Threshold</string>
 </resources>
