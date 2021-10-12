@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
+import common.LocationType;
 import controllers.EventsHandler;
 import models.SettingsModel;
 
@@ -54,6 +55,20 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.btnImgIndoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.setLocation(LocationType.INDOOR);
+            }
+        });
+
+        binding.btnImgOutdoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.setLocation(LocationType.OUTDOOR);
+            }
+        });
+
         binding.btnImgSos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +105,10 @@ public class FirstFragment extends Fragment {
         });
 
 
+    }
+
+    public EventsHandler getHandler(){
+        return this.handler;
     }
 
     @Override

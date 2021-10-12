@@ -8,11 +8,11 @@ import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +24,7 @@ import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -34,6 +35,7 @@ import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,10 +56,11 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final String TAG = "MainActivity";
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
-    private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279"; // TODO insert your API Key here
+    private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279";
     private EmpaDeviceManager deviceManager = null;
     private TextView bvpLabel;
     private TextView edaLabel;
+    private ProgressBar edaProgress;
     private TextView batteryLabel;
     private TextView statusLabel;
     private TextView deviceNameLabel;
@@ -70,27 +73,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        statusLabel = (TextView) findViewById(R.id.status);
-//        dataCnt = (LinearLayout) findViewById(R.id.dataArea);
         bvpLabel = (TextView) findViewById(R.id.txt_bpm);
         edaLabel = (TextView) findViewById(R.id.txt_eda);
-//        batteryLabel = (TextView) findViewById(R.id.battery);
-//        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
+        edaProgress = (ProgressBar)findViewById(R.id.pb_eda);
+
         initEmpaticaDeviceManager();
 
-        //setSupportActionBar(binding.toolbar);
-
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        //appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-//        binding.fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
 
     @Override
@@ -220,10 +208,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
-        // Check if the discovered device can be used with your API key. If allowed is always false,
-        // the device is not linked with your API key. Please check your developer area at
-        // https://www.empatica.com/connect/developer.php
-
         Log.i(TAG, "didDiscoverDevice" + deviceName + "allowed: " + allowed);
 
         if (allowed) {
@@ -334,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
 
-        updateLabel(bvpLabel, "" + bvp);
+        //updateLabel(bvpLabel, "" + bvp);
     }
 
     @Override
@@ -345,6 +329,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
         updateLabel(edaLabel, "" + gsr);
+        updateProgress(gsr);
+
     }
 
     @Override
@@ -362,7 +348,21 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                label.setText(text);
+                if( label != null){
+                    String lableText = text;
+                    if(lableText != null && lableText.length() > 4)
+                        lableText = lableText.substring(0,4);
+                    label.setText(lableText);
+                }
+            }
+        });
+    }
+
+    private void updateProgress(Float progress){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                edaProgress.setProgress(progress.intValue());
             }
         });
     }
@@ -404,8 +404,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
-
-                dataCnt.setVisibility(View.VISIBLE);
+                if(dataCnt != null){
+                    dataCnt.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -416,8 +417,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
             @Override
             public void run() {
-
-                dataCnt.setVisibility(View.INVISIBLE);
+                if(dataCnt != null) {
+                    dataCnt.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }

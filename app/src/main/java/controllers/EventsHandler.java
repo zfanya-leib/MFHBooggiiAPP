@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -20,27 +19,36 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.preference.PreferenceManager;
 
 import com.restart.myapplicationactivitytest.R;
 
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import common.Constants;
+import common.LocationType;
+import common.State;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class EventsHandler implements LocationListener {
 
+    private float edaStatus;
+    private State state = State.NORMAL;
+    private AtomicInteger thresholdCounter = new AtomicInteger(3);
+    private LocationType location;
     private FragmentActivity currentActivity;
     private MediaController mediaController;
     private boolean videoToggle = false;
     private Ringtone sosRingtone;
     private LocationManager locationManager;
     private Vibrator vibrator;
+    private ArrayList<Integer> videoArr=new ArrayList<>();
 
 
     public EventsHandler(FragmentActivity activity) {
@@ -52,8 +60,90 @@ public class EventsHandler implements LocationListener {
 
         this.locationManager = (LocationManager) this.currentActivity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         this.vibrator = (Vibrator) this.currentActivity.getSystemService(Context.VIBRATOR_SERVICE);
+
+        this.videoArr.add(R.raw.a1);
+        this.videoArr.add(R.raw.a2);
+        this.videoArr.add(R.raw.a3);
+        this.videoArr.add(R.raw.a4);
+        this.videoArr.add(R.raw.a5);
     }
 
+    public void setLocation(LocationType location){
+        this.location = location;
+    }
+
+    public int getEDAThreshold(){
+
+        SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
+        int edaThreshold = Integer.MAX_VALUE;
+        if(this.location == LocationType.INDOOR) {
+            edaThreshold = prefs.getInt(Constants.EDA_INDOOR_THRESHOLD, Integer.MAX_VALUE);
+        }
+        if(this.location == LocationType.OUTDOOR) {
+            edaThreshold = prefs.getInt(Constants.EDA_OUTDOOR_THRESHOLD, Integer.MAX_VALUE);
+        }
+
+        return edaThreshold;
+    }
+
+    public boolean isEDAThreshold(){
+
+        SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
+        int edaThreshold = Integer.MAX_VALUE;
+        if(this.location == LocationType.INDOOR) {
+            edaThreshold = prefs.getInt(Constants.EDA_INDOOR_THRESHOLD, Integer.MAX_VALUE);
+            return edaThreshold > this.edaStatus;
+        }
+        if(this.location == LocationType.OUTDOOR) {
+            edaThreshold = prefs.getInt(Constants.EDA_OUTDOOR_THRESHOLD, Integer.MAX_VALUE);
+            return edaThreshold > this.edaStatus;
+        }
+
+        return false;
+    }
+
+    public void onEDAUpdate(float edaVal){
+        if(this.state == State.SOS){
+            return;
+        }
+        if(this.location == null){
+            return;
+        }
+        this.edaStatus = edaVal;
+
+        SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
+
+        if(this.location == LocationType.INDOOR){
+            int edaThreshold = prefs.getInt(Constants.EDA_INDOOR_THRESHOLD,Integer.MAX_VALUE);
+            if( edaVal > edaThreshold){
+                int thresholdStatus = this.thresholdCounter.decrementAndGet();
+                if(thresholdStatus == 0){
+                    if( this.state == State.NORMAL) {
+                        this.state = State.SOS;
+                        onSOS();
+                    }
+                }
+            }
+            else{
+                this.thresholdCounter.set(3);
+            }
+        }
+        if(this.location == LocationType.OUTDOOR){
+            int edaThreshold = prefs.getInt(Constants.EDA_OUTDOOR_THRESHOLD,Integer.MAX_VALUE);
+            if( edaVal > edaThreshold){
+                int thresholdStatus = this.thresholdCounter.decrementAndGet();
+                if(thresholdStatus == 0){
+                    if( this.state == State.NORMAL) {
+                        this.state = State.SOS;
+                        onSOS();
+                    }
+                }
+            }
+            else{
+                this.thresholdCounter.set(3);
+            }
+        }
+    }
 
     public void onSOS() {
 
@@ -77,10 +167,19 @@ public class EventsHandler implements LocationListener {
             this.videoToggle = true;
             ImageView img = (ImageView) this.currentActivity.findViewById(R.id.imageView);
             img.setVisibility(View.INVISIBLE);
+
+            // select random video
+            Random rand = new Random();
+            int randomNum = rand.nextInt((5 - 1) + 1) ;
             VideoView video = (VideoView) this.currentActivity.findViewById(R.id.video_player);
-            video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + R.raw.a));
+            video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + this.videoArr.get(randomNum)));
             video.setVisibility(View.VISIBLE);
             video.setMediaController(mediaController);
+            video.setOnCompletionListener(mp -> {
+                int nextRandom = rand.nextInt((5 - 1) + 1) ;
+                video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + this.videoArr.get(nextRandom)));
+                video.start();
+            });
             video.start();
         } else {
             if (this.sosRingtone.isPlaying()) {
@@ -115,6 +214,7 @@ public class EventsHandler implements LocationListener {
                 video.setVisibility(View.INVISIBLE);
                 ImageView img = (ImageView) this.currentActivity.findViewById(R.id.imageView);
                 img.setVisibility(View.VISIBLE);
+                this.state = State.NORMAL;
             }
         }
     }

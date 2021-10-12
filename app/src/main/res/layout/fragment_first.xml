@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="53dp"
         android:gravity="bottom"
-        android:text="60"
+        android:maxLength="5"
         android:textColor="@color/general_text"
         android:textSize="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
@@ -82,12 +82,12 @@
         android:id="@+id/textViewBPR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="120dp"
         android:text="BPR"
         android:textColor="@color/general_text"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/txt_bpm" />
+        app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <TextView
         android:id="@+id/txt_bprl"
@@ -136,6 +136,7 @@
         android:text="EDA"
         android:textColor="@color/general_text"
         android:textSize="20sp"
+        android:maxLength="5"
         app:layout_constraintBottom_toBottomOf="@+id/img_eda"
         app:layout_constraintStart_toEndOf="@+id/img_eda" />
 
@@ -146,7 +147,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:minWidth="400dp"
-        android:progress="60"
+        android:max="30"
+        android:min="0"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_eda" />
 
