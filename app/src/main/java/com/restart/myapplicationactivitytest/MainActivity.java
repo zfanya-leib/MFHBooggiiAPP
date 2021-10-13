@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView edaLabel;
     private TextView batteryLabel;
     private TextView statusLabel;
-    private TextView deviceNameLabel;
+//    private TextView deviceNameLabel;
     private LinearLayout dataCnt;
 
     @Override
@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        statusLabel = (TextView) findViewById(R.id.status);
+        statusLabel = (TextView) findViewById(R.id.txt_status);
 //        dataCnt = (LinearLayout) findViewById(R.id.dataArea);
         bpmLabel = (TextView) findViewById(R.id.txt_bpm);
         edaLabel = (TextView) findViewById(R.id.txt_eda);
         hrvLabel = (TextView) findViewById(R.id.txt_hrv);
-//        batteryLabel = (TextView) findViewById(R.id.battery);
+        batteryLabel = (TextView) findViewById(R.id.txt_battery);
 //        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
         initEmpaticaDeviceManager();
 
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             try {
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
-                updateLabel(deviceNameLabel, "To: " + deviceName);
+//                updateLabel(deviceNameLabel, "To: " + deviceName);
             } catch (ConnectionNotAllowedException e) {
                 // This should happen only if you try to connect when allowed == false.
                 Toast.makeText(MainActivity.this, "Sorry, you can't connect to this device", Toast.LENGTH_SHORT).show();
@@ -316,17 +316,17 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             deviceManager.startScanning();
             // The device manager has established a connection
 
-            hide();
+//            hide();
 
         } else if (status == EmpaStatus.CONNECTED) {
 
-            show();
+//            show();
             // The device manager disconnected from a device
         } else if (status == EmpaStatus.DISCONNECTED) {
 
-            updateLabel(deviceNameLabel, "");
+//            updateLabel(deviceNameLabel, "");
 
-            hide();
+//            hide();
         }
     }
 

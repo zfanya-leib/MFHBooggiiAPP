@@ -63,7 +63,7 @@
         android:id="@+id/img_hr"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="18dp"
         android:src="@drawable/_724416_activity_healthcare_heart_heartbeat_heartrate_icon"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toTopOf="@+id/gl_top" />
@@ -95,12 +95,37 @@
         android:id="@+id/txt_bpm"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:gravity="bottom"
+        android:gravity="center"
         android:text="60"
         android:textColor="@color/general_text"
         android:textSize="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="83dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="130dp"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="Status:"
+        android:textColor="@color/general_text"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/gl_left"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_status"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center"
+        android:text="N/A"
+        android:textColor="@color/general_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewStatus"
+        app:layout_constraintStart_toEndOf="@+id/textViewStatus" />
 
     <TextView
         android:id="@+id/txt_battery"
