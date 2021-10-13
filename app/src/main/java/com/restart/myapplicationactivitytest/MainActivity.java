@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
-        updateLabel(edaLabel, "" + gsr);
+        updateLabel(edaLabel, String.format("%.2f", gsr));
         updateProgress(gsr);
     }
 
@@ -392,10 +392,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
             @Override
             public void run() {
                 if( label != null){
-                    String lableText = text;
-                    if(lableText != null && lableText.length() > 4)
-                        lableText = lableText.substring(0,4);
-                    label.setText(lableText);
+                    label.setText(text);
                 }
             }
         });
