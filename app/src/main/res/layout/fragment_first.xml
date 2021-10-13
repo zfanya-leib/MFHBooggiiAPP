@@ -12,12 +12,12 @@
         android:id="@+id/textViewHRV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
+        android:layout_marginStart="0dp"
         android:text="HRV"
         android:textColor="@color/general_text"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/txt_eda"
-        app:layout_constraintStart_toEndOf="@+id/txt_eda" />
+        app:layout_constraintStart_toStartOf="@+id/txt_battery" />
 
     <TextView
         android:id="@+id/txt_hrv"
@@ -63,7 +63,7 @@
         android:id="@+id/img_hr"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="22dp"
         android:src="@drawable/_724416_activity_healthcare_heart_heartbeat_heartrate_icon"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toTopOf="@+id/gl_top" />
@@ -106,7 +106,7 @@
         android:id="@+id/textViewStatus"
         android:layout_width="83dp"
         android:layout_height="46dp"
-        android:layout_marginStart="130dp"
+        android:layout_marginStart="50dp"
         android:foregroundGravity="center_vertical|center_horizontal"
         android:gravity="center_horizontal|center_vertical"
         android:text="Status:"
@@ -129,17 +129,16 @@
 
     <TextView
         android:id="@+id/txt_battery"
-        android:layout_width="97dp"
-        android:layout_height="58dp"
+        android:layout_width="106dp"
+        android:layout_height="59dp"
         android:layout_marginStart="120dp"
-        android:autoText="false"
         android:background="@drawable/_005774_battery_empty_power_status_icon"
         android:elegantTextHeight="true"
-        android:gravity="bottom|end"
-        android:text="140"
+        android:text="100%"
+        android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/general_text"
-        android:textSize="32dp"
+        android:textSize="26dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/txt_bpm" />
 

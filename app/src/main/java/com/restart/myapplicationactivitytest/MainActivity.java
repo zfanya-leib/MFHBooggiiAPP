@@ -343,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveBatteryLevel(float battery, double timestamp) {
+        Log.i(TAG, "didReceiveBatteryLevel" + String.format("%.0f %%", battery * 100));
         updateLabel(batteryLabel, String.format("%.0f %%", battery * 100));
     }
 
@@ -353,18 +354,22 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
+        Log.i(TAG, "didReceiveIBI" + ibi);
         ibiArray.push(ibi);
         Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
-        Double pbm = sum / 60 * ibiArray.size();
-        updateLabel(bpmLabel, "" + pbm.intValue());
+        Double bpm = 60 / sum * ibiArray.size();
+        Log.i(TAG, "bpm: " + bpm);
+
+        updateLabel(bpmLabel, "" + bpm.intValue());
 
         float rmssdTotal = 0;
 
         for (int i = 1; i < ibiArray.size(); i++) {
-            rmssdTotal += pow(ibiArray.get(i).intValue() - ibiArray.get(i - 1).intValue(), 2);
+            rmssdTotal += pow((ibiArray.get(i - 1) - ibiArray.get(i)) * 1000, 2);
         }
 
         float rmssd = (float) sqrt(rmssdTotal / (ibiArray.size() - 1));
+        Log.i(TAG, "rmssd: " + rmssd);
         updateLabel(hrvLabel, "" + (int) rmssd);
 
 //        float rrTotal=0;
@@ -407,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     @Override
     public void didEstablishConnection() {
 
-        show();
+//        show();
     }
 
     @Override
