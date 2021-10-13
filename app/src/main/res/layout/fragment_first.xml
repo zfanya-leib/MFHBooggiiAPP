@@ -95,6 +95,7 @@
         android:id="@+id/txt_bpm"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
+        android:maxLength="5"
         android:gravity="center"
         android:text="60"
         android:textColor="@color/general_text"
@@ -150,6 +151,7 @@
         android:text="EDA"
         android:textColor="@color/general_text"
         android:textSize="20sp"
+        android:maxLength="5"
         app:layout_constraintBottom_toBottomOf="@+id/img_eda"
         app:layout_constraintStart_toEndOf="@+id/img_eda" />
 
@@ -160,7 +162,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:minWidth="400dp"
-        android:progress="60"
+        android:max="30"
+        android:min="0"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_eda" />
 
