@@ -1,5 +1,8 @@
 package com.restart.myapplicationactivitytest;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,8 +13,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,8 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
     private AppBarConfiguration appBarConfiguration;
@@ -56,7 +59,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279"; // TODO insert your API Key here
     private EmpaDeviceManager deviceManager = null;
-    private TextView bvpLabel;
+    private TextView bpmLabel;
+    private TextView hrvLabel;
+    Stack<Float> ibiArray = new SizedStack<Float>(10);
     private TextView edaLabel;
     private TextView batteryLabel;
     private TextView statusLabel;
@@ -72,8 +77,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
 //        statusLabel = (TextView) findViewById(R.id.status);
 //        dataCnt = (LinearLayout) findViewById(R.id.dataArea);
-        bvpLabel = (TextView) findViewById(R.id.txt_bpm);
+        bpmLabel = (TextView) findViewById(R.id.txt_bpm);
         edaLabel = (TextView) findViewById(R.id.txt_eda);
+        hrvLabel = (TextView) findViewById(R.id.txt_hrv);
 //        batteryLabel = (TextView) findViewById(R.id.battery);
 //        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
         initEmpaticaDeviceManager();
@@ -333,8 +339,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-
-        updateLabel(bvpLabel, "" + bvp);
     }
 
     @Override
@@ -349,7 +353,35 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
-//        updateLabel(ibiLabel, "" + ibi);
+        ibiArray.push(ibi);
+        Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
+        Double pbm = sum / 60 * ibiArray.size();
+        updateLabel(bpmLabel, "" + pbm.intValue());
+
+        float rmssdTotal = 0;
+
+        for (int i = 1; i < ibiArray.size(); i++) {
+            rmssdTotal += pow(ibiArray.get(i).intValue() - ibiArray.get(i - 1).intValue(), 2);
+        }
+
+        float rmssd = (float) sqrt(rmssdTotal / (ibiArray.size() - 1));
+        updateLabel(hrvLabel, "" + (int) rmssd);
+
+//        float rrTotal=0;
+//
+//        for (int i = 1; i < ibiArray.size(); i++) {
+//            rrTotal += ibiArray.get(i).intValue();
+//        }
+//
+//        float mrr = rrTotal / (ibiArray.size() - 1);
+//        float sdnnTotal = 0;
+//
+//        for (int i = 1; i < ibiArray.size(); i++) {
+//            sdnnTotal += pow(ibiArray.get(i).intValue() - mrr, 2);
+//        }
+//
+//        float sdnn = (float) sqrt(sdnnTotal / (ibiArray.size() - 1));
+//        updateLabel(hrvLabel, "" + (int) sdnn);
     }
 
     @Override

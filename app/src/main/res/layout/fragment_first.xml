@@ -8,6 +8,30 @@
     tools:context=".FirstFragment">
 
 
+    <TextView
+        android:id="@+id/textViewHRV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:text="HRV"
+        android:textColor="@color/general_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_eda"
+        app:layout_constraintStart_toEndOf="@+id/txt_eda" />
+
+    <TextView
+        android:id="@+id/txt_hrv"
+        android:layout_width="wrap_content"
+        android:layout_height="53dp"
+        android:layout_marginStart="8dp"
+        android:gravity="bottom|end"
+        android:text="90"
+        android:textAlignment="textEnd"
+        android:textColor="@color/general_text"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewHRV"
+        app:layout_constraintStart_toEndOf="@id/textViewHRV" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier2"
         android:layout_width="wrap_content"
@@ -258,7 +282,7 @@
         app:layout_constraintEnd_toStartOf="@+id/divider2"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"/>
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <ImageButton
         android:id="@+id/img_btn_drug"
@@ -374,8 +398,8 @@
         android:backgroundTint="@color/white"
         android:backgroundTintMode="add"
         android:text="@string/activity_report"
-        android:textSize="20sp"
         android:textColor="@color/general_text"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_settings"
         app:layout_constraintStart_toStartOf="parent"
