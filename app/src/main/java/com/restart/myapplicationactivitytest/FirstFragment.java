@@ -1,9 +1,15 @@
 package com.restart.myapplicationactivitytest;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -11,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
+import common.Constants;
 import common.LocationType;
 import controllers.EventsHandler;
 import models.SettingsModel;
@@ -20,6 +27,7 @@ public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private EventsHandler handler;
     private SettingsModel settings;
+    private BroadcastReceiver broadcastReceiver;
 
 
     @Override
@@ -104,6 +112,7 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        registerReceiver();
 
     }
 
@@ -115,6 +124,69 @@ public class FirstFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(broadcastReceiver != null) {
+            getActivity().unregisterReceiver(broadcastReceiver);
+        }
+    }
+
+    private void registerReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
+                Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE,-1);
+
+                switch (param){
+                    case Constants.EDA:
+                        updateLabel((TextView)getActivity().findViewById(R.id.txt_eda),value.toString());
+                        updateProgress(value);
+                        handler.onEDAUpdate(value);
+                        break;
+                    case Constants.BPM:
+                        updateLabel((TextView)getActivity().findViewById(R.id.txt_bpm),value.toString());
+                        break;
+                    case Constants.HRV:
+                        //updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
+                        break;
+                    case Constants.BATTERY:
+                        //updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),value.toString());
+                        break;
+                }
+            }
+        };
+
+
+        this.getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
+    }
+
+    // Update a label with some text, making sure this is run in the UI thread
+    private void updateLabel(final TextView label, final String text) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if( label != null){
+                    String lableText = text;
+                    if(lableText != null && lableText.length() > 4)
+                        lableText = lableText.substring(0,4);
+                    label.setText(lableText);
+                }
+            }
+        });
+    }
+
+    private void updateProgress(Float progress){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ProgressBar edaProgress = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
+                edaProgress.setProgress(progress.intValue());
+            }
+        });
     }
 
 }
