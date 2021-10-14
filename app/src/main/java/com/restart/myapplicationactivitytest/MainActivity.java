@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private EmpaDeviceManager deviceManager = null;
     private TextView bpmLabel;
     private TextView hrvLabel;
-    Stack<Float> ibiArray = new SizedStack<Float>(10);
+    private int max_last_ibi_samples_to_cache = 15;
+    private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
     private TextView edaLabel;
     private ProgressBar edaProgress;
     private TextView batteryLabel;
