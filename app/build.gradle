@@ -54,6 +54,7 @@ dependencies {
     // Amplify core dependency
     implementation 'com.amplifyframework:aws-api:1.+'
     implementation 'com.amplifyframework:aws-auth-cognito:1.+'
+    implementation 'com.amplifyframework:aws-datastore:1.+'
     implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.+'
     implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.+'
 
