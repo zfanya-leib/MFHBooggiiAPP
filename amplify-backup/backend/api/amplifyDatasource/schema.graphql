@@ -1,6 +1,0 @@
-type Measurement @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String
-  valu: Float
-  utcTime: AWSDateTime
-}

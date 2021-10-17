@@ -33,11 +33,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.core.Amplify;
-import com.amplifyframework.core.model.temporal.Temporal;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
-import com.amplifyframework.datastore.generated.model.Measurement;
 import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
 
 import android.view.Menu;
@@ -56,9 +51,7 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
-import java.time.Instant;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements EmpaDataDelegate, EmpaStatusDelegate {
 
@@ -97,19 +90,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         hrvLabel = (TextView) findViewById(R.id.txt_hrv);
         batteryLabel = (TextView) findViewById(R.id.txt_battery);
 //        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
-
-        try {
-            //Amplify.addPlugin(new AWSApiPlugin()); // UNCOMMENT this line once backend is deployed
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-            Log.i("Amplify", "Initialized Amplify");
-        } catch (AmplifyException error) {
-            Log.e("Amplify", "Could not initialize Amplify", error);
-        }
-
-        writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
-
-//        initEmpaticaDeviceManager();
+        initEmpaticaDeviceManager();
 
     }
 
@@ -368,25 +349,12 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void didReceiveIBI(float ibi, double timestamp) {
         Log.i(TAG, "didReceiveIBI" + ibi);
         ibiArray.push(ibi);
-        updateLabel(bpmLabel, "" + calcBpm().intValue());
-        updateLabel(hrvLabel, "" + (int)calcHrv());
-        writeIbiToDb((double) ibi, timestamp);
-    }
+        Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
+        Double bpm = 60 / sum * ibiArray.size();
+        Log.i(TAG, "bpm: " + bpm);
 
-    private void writeIbiToDb(double ibi, double timestamp) {
-        Measurement item = Measurement.builder()
-                .name("IBI")
-                .value(ibi)
-                .timestamp(new Temporal.Timestamp((long) timestamp, TimeUnit.SECONDS))
-                .build();
-        Amplify.DataStore.save(
-                item,
-                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
-                error -> Log.e("Amplify", "Could not save item to DataStore", error)
-        );
-    }
+        updateLabel(bpmLabel, "" + bpm.intValue());
 
-    private float calcHrv() {
         float rmssdTotal = 0;
 
         for (int i = 1; i < ibiArray.size(); i++) {
@@ -395,8 +363,9 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
         float rmssd = (float) sqrt(rmssdTotal / (ibiArray.size() - 1));
         Log.i(TAG, "rmssd: " + rmssd);
-        return rmssd;
-        //        float rrTotal=0;
+        updateLabel(hrvLabel, "" + (int) rmssd);
+
+//        float rrTotal=0;
 //
 //        for (int i = 1; i < ibiArray.size(); i++) {
 //            rrTotal += ibiArray.get(i).intValue();
@@ -411,15 +380,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 //
 //        float sdnn = (float) sqrt(sdnnTotal / (ibiArray.size() - 1));
 //        updateLabel(hrvLabel, "" + (int) sdnn);
-
-    }
-
-    @NonNull
-    private Double calcBpm() {
-        Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
-        Double bpm = 60 / sum * ibiArray.size();
-        Log.i(TAG, "bpm: " + bpm);
-        return bpm;
     }
 
     @Override
