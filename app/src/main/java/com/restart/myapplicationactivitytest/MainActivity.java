@@ -11,37 +11,35 @@ import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
-
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.SignInUIOptions;
+import com.amazonaws.mobile.client.UserStateDetails;
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.core.Amplify;
 import com.empatica.empalink.ConnectionNotAllowedException;
 import com.empatica.empalink.EmpaDeviceManager;
 import com.empatica.empalink.EmpaticaDevice;
@@ -50,6 +48,7 @@ import com.empatica.empalink.config.EmpaSensorType;
 import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
+import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
 
 import java.util.Stack;
 
@@ -73,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     private TextView statusLabel;
 //    private TextView deviceNameLabel;
     private LinearLayout dataCnt;
+    private String userName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,57 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         hrvLabel = (TextView) findViewById(R.id.txt_hrv);
         batteryLabel = (TextView) findViewById(R.id.txt_battery);
 //        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
-        initEmpaticaDeviceManager();
+
+        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
+            @Override
+            public void onResult(UserStateDetails userStateDetails) {
+                switch (userStateDetails.getUserState()){
+                    case SIGNED_IN:
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                TextView textView = (TextView) findViewById(R.id.text);
+//                                textView.setText("Logged IN");
+//                            }
+//                        });
+                        break;
+                    case SIGNED_OUT:
+                        try {
+                            AWSMobileClient.getInstance().showSignIn(MainActivity.this, SignInUIOptions.builder().build());
+                            userName = AWSMobileClient.getInstance().getUsername();
+                            Log.i(TAG, "userName: " + userName);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.toString());
+                        }
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                TextView textView = (TextView) findViewById(R.id.text);
+//                                textView.setText("Logged OUT");
+//                            }
+//                        });
+                        break;
+                    default:
+                        AWSMobileClient.getInstance().signOut();
+                        break;
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("INIT", e.toString());
+            }
+        });
+
+        try {
+//            Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.configure(getApplicationContext());
+            Log.i(TAG, "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e(TAG, "Could not initialize Amplify", error);
+        }
+
+//        initEmpaticaDeviceManager();
 
     }
 
