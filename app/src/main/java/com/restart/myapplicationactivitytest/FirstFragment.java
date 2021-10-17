@@ -17,6 +17,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import common.Constants;
 import common.LocationType;
 import controllers.EventsHandler;
@@ -28,7 +31,7 @@ public class FirstFragment extends Fragment {
     private EventsHandler handler;
     private SettingsModel settings;
     private BroadcastReceiver broadcastReceiver;
-
+    private AtomicLong loopCounter = new AtomicLong();
 
     @Override
     public View onCreateView(
@@ -138,24 +141,31 @@ public class FirstFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
-                Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE,-1);
+                long loopCount = loopCounter.getAndIncrement();
+                if( loopCount% 20 == 0) {
+                    String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
+                    Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
 
-                switch (param){
-                    case Constants.EDA:
-                        updateLabel((TextView)getActivity().findViewById(R.id.txt_eda),value.toString());
-                        updateProgress(value);
-                        handler.onEDAUpdate(value);
-                        break;
-                    case Constants.BPM:
-                        updateLabel((TextView)getActivity().findViewById(R.id.txt_bpm),value.toString());
-                        break;
-                    case Constants.HRV:
-                        //updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
-                        break;
-                    case Constants.BATTERY:
-                        //updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),value.toString());
-                        break;
+                    switch (param) {
+                        case Constants.EDA:
+                            updateLabel((TextView) getActivity().findViewById(R.id.txt_eda), value.toString());
+                            updateProgress(value);
+                            handler.onEDAUpdate(value);
+                            break;
+                        case Constants.BPM:
+                            updateLabel((TextView) getActivity().findViewById(R.id.txt_bpm), value.toString());
+                            break;
+                        case Constants.HRV:
+                            //updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
+                            break;
+                        case Constants.BATTERY:
+                            //updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),value.toString());
+                            break;
+                    }
+
+                   if(loopCount == 10000000) {
+                       loopCounter.set(0);
+                   }
                 }
             }
         };

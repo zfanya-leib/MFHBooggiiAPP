@@ -12,6 +12,7 @@ import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.TextUtils;
@@ -65,8 +66,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
             }
         }
 
-
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void startForegroundService(){
@@ -81,8 +81,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                     .setSmallIcon(R.drawable.icon)
                     .setContentIntent(pendingIntent)
                     .build();
-            startForeground(1, notification);
-
+            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
             initEmpaticaDeviceManager();
     }
 

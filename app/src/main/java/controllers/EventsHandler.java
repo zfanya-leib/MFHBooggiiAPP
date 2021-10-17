@@ -49,16 +49,15 @@ public class EventsHandler implements LocationListener {
     private LocationManager locationManager;
     private Vibrator vibrator;
     private ArrayList<Integer> videoArr=new ArrayList<>();
+    private Location currentLocation;
+    private boolean isSoS = false;
 
 
     public EventsHandler(FragmentActivity activity) {
         this.currentActivity = activity;
         mediaController = new MediaController(activity);
 
-        Uri notification = Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + R.raw.emergency_alarm);
-        this.sosRingtone = RingtoneManager.getRingtone(this.currentActivity, notification);
-
-        this.locationManager = (LocationManager) this.currentActivity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        activateLocation();
         this.vibrator = (Vibrator) this.currentActivity.getSystemService(Context.VIBRATOR_SERVICE);
 
         this.videoArr.add(R.raw.a1);
@@ -149,13 +148,14 @@ public class EventsHandler implements LocationListener {
 
         if (!this.videoToggle) {
 
+            this.isSoS = true;
             this.currentActivity.findViewById(R.id.btn_img_sos).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_drug).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_call1).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_call2).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_location).startAnimation(getAnimation());
 
-
+            setRingtone();
             this.sosRingtone.setVolume(90);
             this.sosRingtone.play();
             this.sosRingtone.setLooping(true);
@@ -169,17 +169,7 @@ public class EventsHandler implements LocationListener {
             img.setVisibility(View.INVISIBLE);
 
             // select random video
-            Random rand = new Random();
-            int randomNum = rand.nextInt((5 - 1) + 1) ;
-            VideoView video = (VideoView) this.currentActivity.findViewById(R.id.video_player);
-            video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + this.videoArr.get(randomNum)));
-            video.setVisibility(View.VISIBLE);
-            video.setMediaController(mediaController);
-            video.setOnCompletionListener(mp -> {
-                int nextRandom = rand.nextInt((5 - 1) + 1) ;
-                video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + this.videoArr.get(nextRandom)));
-                video.start();
-            });
+            VideoView video = getVideoView();
             video.start();
         } else {
             if (this.sosRingtone.isPlaying()) {
@@ -215,7 +205,52 @@ public class EventsHandler implements LocationListener {
                 ImageView img = (ImageView) this.currentActivity.findViewById(R.id.imageView);
                 img.setVisibility(View.VISIBLE);
                 this.state = State.NORMAL;
+
+                this.isSoS = false;
             }
+        }
+    }
+
+
+    private VideoView getVideoView() {
+        SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
+        VideoView video = (VideoView) this.currentActivity.findViewById(R.id.video_player);
+
+        if( prefs.contains(Constants.DEFAULT_VIDEO) && prefs.getBoolean(Constants.DEFAULT_VIDEO,true)){
+            Random rand = new Random();
+            int randomNum = rand.nextInt((5 - 1) + 1) ;
+            video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + this.videoArr.get(randomNum)));
+            video.setVisibility(View.VISIBLE);
+            video.setMediaController(mediaController);
+            video.setOnCompletionListener(mp -> {
+                int nextRandom = rand.nextInt((5 - 1) + 1) ;
+                video.setVideoURI(Uri.parse("android.resource://" + this.currentActivity.getPackageName() + "/" + this.videoArr.get(nextRandom)));
+                video.start();
+            });
+        }
+        else{
+            video.setVideoURI(Uri.parse(prefs.getString(Constants.VIDEO,"")));
+            video.setVisibility(View.VISIBLE);
+            video.setMediaController(mediaController);
+            video.setOnCompletionListener(mp -> {
+                video.start();
+            });
+        }
+
+        return video;
+    }
+
+    private void setRingtone() {
+        String defRingtone ="android.resource://" + this.currentActivity.getPackageName() + "/" + R.raw.emergency_alarm;
+
+        SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
+        if(prefs.getBoolean(Constants.DEFAULT_RINGTONE,true)){
+            Uri notification = Uri.parse(defRingtone);
+            this.sosRingtone = RingtoneManager.getRingtone(this.currentActivity, notification);
+        }
+        else{
+            Uri notification = Uri.parse(prefs.getString(Constants.RINGTONE,defRingtone));
+            this.sosRingtone = RingtoneManager.getRingtone(this.currentActivity, notification);
         }
     }
 
@@ -223,12 +258,14 @@ public class EventsHandler implements LocationListener {
         if( this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
             SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
             String phoneNumber = prefs.getString(Constants.PHONE_CALL_1,"");
-            if( phoneNumber != ""){
+            if( phoneNumber != "") {
                 Intent i = new Intent(Intent.ACTION_CALL);
-                i.setData(Uri.parse(String.format("tel:%s",phoneNumber)));
+                i.setData(Uri.parse(String.format("tel:%s", phoneNumber)));
                 this.currentActivity.startActivity(i);
 
-                this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+                if (this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation() != null) {
+                    this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation().cancel();
+                }
             }
         }
     }
@@ -242,12 +279,18 @@ public class EventsHandler implements LocationListener {
                 i.setData(Uri.parse(String.format("tel:%s",phoneNumber)));
                 this.currentActivity.startActivity(i);
 
-                this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation().cancel();
+                if(this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_call2).getAnimation().cancel();
+                }
             }
         }
     }
 
     public void onLocationChanged(Location location) {
+        this.currentLocation = location;
+    }
+
+    public void sendLocationSms(){
         SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
 
         String phoneNumber = prefs.getString(Constants.PHONE_LOCATION,"");
@@ -257,23 +300,28 @@ public class EventsHandler implements LocationListener {
             smsBody.append("please come to help me ASAP!!!");
             smsBody.append("\r\n");
             smsBody.append("http://maps.google.com?q=");
-            smsBody.append(location.getLatitude());
+            smsBody.append(currentLocation.getLatitude());
             smsBody.append(",");
-            smsBody.append(location.getLongitude());
+            smsBody.append(currentLocation.getLongitude());
             smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), null, null);
         }
+    }
 
-        this.locationManager.removeUpdates(this);
+    public void activateLocation(){
+        if (ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        this.locationManager = (LocationManager) this.currentActivity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
     public void sendLocation() {
-        if( this.currentActivity.findViewById(R.id.img_btn_location).getAnimation() != null &&
-                this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().hasStarted()) {
-            if (ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-            this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
+        if( this.isSoS && this.currentLocation != null) {
+           sendLocationSms();
+
+           if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation() != null) {
+               this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
+           }
         }
     }
 

@@ -7,6 +7,10 @@ public class Constants {
     public static final String PHONE_CALL_1 = "PHONE_CALL_1";
     public static final String PHONE_CALL_2 = "PHONE_CALL_2";
     public static final String PHONE_LOCATION = "PHONE_LOCATION";
+    public static final String RINGTONE = "RINGTONE";
+    public static final String DEFAULT_RINGTONE = "DEFAULT_RINGTONE";
+    public static final String VIDEO = "VIDEO";
+    public static final String DEFAULT_VIDEO = "DEFAULT_VIDEO";
 
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
