@@ -24,13 +24,15 @@
         android:layout_width="wrap_content"
         android:layout_height="53dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:gravity="bottom|end"
         android:text="---"
         android:textAlignment="textEnd"
         android:textColor="@color/general_text"
         android:textSize="32dp"
         app:layout_constraintBottom_toBottomOf="@id/textViewHRV"
-        app:layout_constraintStart_toEndOf="@id/textViewHRV" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewHRV" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier2"
@@ -63,7 +65,7 @@
         android:id="@+id/img_hr"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/_724416_activity_healthcare_heart_heartbeat_heartrate_icon"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toTopOf="@+id/gl_top" />
@@ -104,44 +106,20 @@
         app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <TextView
-        android:id="@+id/textViewStatus"
-        android:layout_width="83dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="50dp"
-        android:foregroundGravity="center_vertical|center_horizontal"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="Status:"
-        android:textColor="@color/general_text"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/gl_left"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_status"
-        android:layout_width="wrap_content"
-        android:layout_height="46dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="center"
-        android:text="N/A"
-        android:textColor="@color/general_text"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewStatus"
-        app:layout_constraintStart_toEndOf="@+id/textViewStatus" />
-
-    <TextView
         android:id="@+id/txt_battery"
         android:layout_width="106dp"
         android:layout_height="59dp"
-        android:layout_marginStart="120dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/_005774_battery_empty_power_status_icon"
         android:elegantTextHeight="true"
-        android:text="---%"
         android:gravity="center"
+        android:text="---%"
         android:textAlignment="center"
         android:textColor="@color/general_text"
         android:textSize="26dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/txt_bpm" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewEDA"
@@ -397,5 +375,23 @@
         app:layout_constraintEnd_toStartOf="@+id/btn_img_settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_img_settings" />
+
+    <ImageView
+        android:id="@+id/img_disconnected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/_016136_delete_smart_watch_icon"
+        app:layout_constraintStart_toStartOf="@+id/txt_battery"
+        app:layout_constraintTop_toBottomOf="@+id/txt_battery" />
+
+    <ImageView
+        android:id="@+id/img_connected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:src="@drawable/_016157_health_smart_watch_icon"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/img_disconnected"
+        app:layout_constraintTop_toTopOf="@+id/img_disconnected" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

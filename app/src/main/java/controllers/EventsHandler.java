@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +25,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
@@ -40,7 +47,8 @@ public class EventsHandler implements LocationListener {
 
     private float edaStatus;
     private State state = State.NORMAL;
-    private AtomicInteger thresholdCounter = new AtomicInteger(3);
+    private int INITIAL_THREASHOLD_WAIT = 20;
+    private AtomicInteger thresholdCounter = new AtomicInteger(INITIAL_THREASHOLD_WAIT);
     private LocationType location;
     private FragmentActivity currentActivity;
     private MediaController mediaController;
@@ -124,7 +132,7 @@ public class EventsHandler implements LocationListener {
                 }
             }
             else{
-                this.thresholdCounter.set(3);
+                this.thresholdCounter.set(INITIAL_THREASHOLD_WAIT);
             }
         }
         if(this.location == LocationType.OUTDOOR){
@@ -132,6 +140,8 @@ public class EventsHandler implements LocationListener {
             if( edaVal > edaThreshold){
                 int thresholdStatus = this.thresholdCounter.decrementAndGet();
                 if(thresholdStatus == 0){
+                    ProgressBar pb = (ProgressBar) this.currentActivity.findViewById(R.id.pb_eda);
+                    pb.getIndeterminateDrawable().setColorFilter(new BlendModeColorFilter(Color.RED, BlendMode.SRC_ATOP));
                     if( this.state == State.NORMAL) {
                         this.state = State.SOS;
                         onSOS();
@@ -139,7 +149,9 @@ public class EventsHandler implements LocationListener {
                 }
             }
             else{
-                this.thresholdCounter.set(3);
+                ProgressBar pb = (ProgressBar) this.currentActivity.findViewById(R.id.pb_eda);
+                pb.getIndeterminateDrawable().setColorFilter(new BlendModeColorFilter(Color.CYAN, BlendMode.SRC_ATOP));
+                this.thresholdCounter.set(INITIAL_THREASHOLD_WAIT);
             }
         }
     }

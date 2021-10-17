@@ -1,13 +1,20 @@
 package com.restart.myapplicationactivitytest;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,11 +34,14 @@ import models.SettingsModel;
 
 public class FirstFragment extends Fragment {
 
+    private static final int REQUEST_ENABLE_BT = 1;
     private FragmentFirstBinding binding;
     private EventsHandler handler;
     private SettingsModel settings;
     private BroadcastReceiver broadcastReceiver;
     private AtomicLong loopCounter = new AtomicLong();
+    Ringtone disconectedRingtone;
+    private Boolean isInitial = true;
 
     @Override
     public View onCreateView(
@@ -42,6 +52,7 @@ public class FirstFragment extends Fragment {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         this.handler = new EventsHandler(getActivity());
         this.settings = new SettingsModel();
+
         return binding.getRoot();
 
     }
@@ -115,7 +126,16 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.imgDisconnected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(disconectedRingtone != null && disconectedRingtone.isPlaying()){
+                    disconectedRingtone.stop();
+                }
+            }
+        });
         registerReceiver();
+
 
     }
 
@@ -142,30 +162,39 @@ public class FirstFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 long loopCount = loopCounter.getAndIncrement();
-                if( loopCount% 20 == 0) {
-                    String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
-                    Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
 
-                    switch (param) {
-                        case Constants.EDA:
+                String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
+                Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
+
+                switch (param) {
+                    case Constants.EDA:
+                        if( loopCount% 10 == 0) {
                             updateLabel((TextView) getActivity().findViewById(R.id.txt_eda), value.toString());
                             updateProgress(value);
-                            handler.onEDAUpdate(value);
-                            break;
-                        case Constants.BPM:
-                            updateLabel((TextView) getActivity().findViewById(R.id.txt_bpm), value.toString());
-                            break;
-                        case Constants.HRV:
-                            //updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
-                            break;
-                        case Constants.BATTERY:
-                            //updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),value.toString());
-                            break;
-                    }
-
-                   if(loopCount == 10000000) {
-                       loopCounter.set(0);
-                   }
+                        }
+                        if(loopCount == 10000000) {
+                            loopCounter.set(0);
+                        }
+                        handler.onEDAUpdate(value);
+                        break;
+                    case Constants.BPM:
+                        updateLabel((TextView) getActivity().findViewById(R.id.txt_bpm), value.toString());
+                        break;
+                    case Constants.HRV:
+                        updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
+                        break;
+                    case Constants.BATTERY:
+                        updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),String.format("%.0f %%", value));
+                        break;
+                    case Constants.BLUETOOTH:
+                        BluetoothAdapter.getDefaultAdapter().enable();
+                        break;
+                    case Constants.DISCONNECTED:
+                        showDisconnect();
+                        break;
+                    case Constants.CONNECTED:
+                        showConnected();
+                        break;
                 }
             }
         };
@@ -173,7 +202,41 @@ public class FirstFragment extends Fragment {
 
         this.getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
     }
+    private void showDisconnect(){
+        ImageView disConnectedIcon =(ImageView)getActivity().findViewById(R.id.img_disconnected);
+        ImageView connectedIcon = (ImageView)getActivity().findViewById(R.id.img_connected);
 
+        if( connectedIcon != null && disConnectedIcon != null ) {
+            connectedIcon.setVisibility(View.INVISIBLE);
+            disConnectedIcon.setVisibility(View.VISIBLE);
+            disConnectedIcon.startAnimation(getAnimation());
+
+            if(!this.isInitial) {
+                String defRingtone = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.disconnected;
+                this.disconectedRingtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(defRingtone));
+                disconectedRingtone.setVolume(90);
+                disconectedRingtone.play();
+                disconectedRingtone.setLooping(true);
+            }
+        }
+
+    }
+
+    private void showConnected(){
+        ImageView disConnectedIcon =(ImageView)getActivity().findViewById(R.id.img_disconnected);
+        ImageView connectedIcon = (ImageView)getActivity().findViewById(R.id.img_connected);
+        if( connectedIcon != null && disConnectedIcon != null ) {
+            if(this.disconectedRingtone != null && this.disconectedRingtone.isPlaying()){
+                this.disconectedRingtone.stop();
+            }
+            this.isInitial = false;
+            connectedIcon.setVisibility(View.VISIBLE);
+            disConnectedIcon.setVisibility(View.INVISIBLE);
+            if (disConnectedIcon.getAnimation() != null) {
+                disConnectedIcon.getAnimation().cancel();
+            }
+        }
+    }
     // Update a label with some text, making sure this is run in the UI thread
     private void updateLabel(final TextView label, final String text) {
         getActivity().runOnUiThread(new Runnable() {
@@ -197,6 +260,16 @@ public class FirstFragment extends Fragment {
                 edaProgress.setProgress(progress.intValue());
             }
         });
+    }
+
+    private AlphaAnimation getAnimation(){
+        AlphaAnimation anim = new AlphaAnimation(0.0f, 0.7f);
+        anim.setDuration(800); //You can manage the blinking time with this parameter
+        anim.setStartOffset(40);
+        anim.setRepeatMode(Animation.ZORDER_NORMAL);
+        anim.setRepeatCount(Animation.INFINITE);
+
+        return anim;
     }
 
 }

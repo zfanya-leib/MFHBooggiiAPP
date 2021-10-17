@@ -23,6 +23,9 @@ public class Constants {
     public static final String HRV = "HRV";
     public static final String BPM = "BPM";
     public static final String BATTERY = "BATTERY";
+    public static final String BLUETOOTH = "BLUETOOTH";
+    public static final String DISCONNECTED = "DISCONNECTED";
+    public static final String CONNECTED = "CONNECTED";
 
 
 

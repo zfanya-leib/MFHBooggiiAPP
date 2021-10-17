@@ -32,14 +32,19 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import java.util.Stack;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import common.Constants;
 
 public class EmpaticaConnectionService extends Service implements EmpaDataDelegate, EmpaStatusDelegate {
     private static final String TAG = "EmpaticaService";
     public static final String CHANNEL_ID = "EmpaticaServiceChannel";
-    private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279";
+    private int max_last_ibi_samples_to_cache = 15;
+    private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
 
     private static EmpaticaConnectionService _instance = null;
 
@@ -165,13 +170,31 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
             try {
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
-                // TODO: send update
-                //updateLabel(deviceNameLabel, "To: " + deviceName);
+
             } catch (ConnectionNotAllowedException e) {
                 // This should happen only if you try to connect when allowed == false.
                 // TODO: send error notification
                 Log.e(TAG, "didDiscoverDevice" + deviceName + "allowed: " + allowed + " - ConnectionNotAllowedException", e);
             }
+        }
+    }
+    @Override
+    public void didUpdateStatus(EmpaStatus status) {
+
+        // The device manager is ready for use
+        if (status == EmpaStatus.READY) {
+            onReciveUpdate(Constants.DISCONNECTED,0);
+            // Start scanning
+            deviceManager.startScanning();
+
+            // The device manager has established a connection
+        } else if (status == EmpaStatus.CONNECTED) {
+
+            onReciveUpdate(Constants.CONNECTED,0);
+            // The device manager disconnected from a device
+        } else if (status == EmpaStatus.DISCONNECTED) {
+            deviceManager.startScanning();
+            onReciveUpdate(Constants.DISCONNECTED,0);
         }
     }
 
@@ -203,8 +226,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     @Override
     public void didRequestEnableBluetooth() {
         // Request the user to enable Bluetooth
-//        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//        startstartActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        onReciveUpdate(Constants.BLUETOOTH,1);
     }
 
     @Override
@@ -233,7 +255,23 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
+        Log.i(TAG, "didReceiveIBI" + ibi);
+        ibiArray.push(ibi);
+        Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
+        Double bpm = 60 / sum * ibiArray.size();
+        Log.i(TAG, "bpm: " + bpm);
 
+        onReciveUpdate(Constants.BPM, bpm.intValue());
+
+        float rmssdTotal = 0;
+
+        for (int i = 1; i < ibiArray.size(); i++) {
+            rmssdTotal += pow((ibiArray.get(i - 1) - ibiArray.get(i)) * 1000, 2);
+        }
+
+        float rmssd = (float) sqrt(rmssdTotal / (ibiArray.size() - 1));
+        Log.i(TAG, "rmssd: " + rmssd);
+        onReciveUpdate(Constants.HRV,(int) rmssd);
     }
 
     @Override
@@ -248,7 +286,8 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     @Override
     public void didReceiveBatteryLevel(float level, double timestamp) {
-
+        Log.i(TAG, "Battery level:" + level);
+        onReciveUpdate(Constants.BATTERY,level * 100);
     }
 
     @Override
@@ -264,31 +303,8 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         this.sendBroadcast(updateIntent);
     }
 
-    @Override
-    public void didUpdateStatus(EmpaStatus status) {
-        // Update the UI
-        //updateLabel(statusLabel, status.name());
 
-        // The device manager is ready for use
-        if (status == EmpaStatus.READY) {
-            //updateLabel(statusLabel, status.name() + " - Turn on your device");
-            // Start scanning
-            deviceManager.startScanning();
-            // The device manager has established a connection
 
-            //hide();
-
-        } else if (status == EmpaStatus.CONNECTED) {
-
-            //show();
-            // The device manager disconnected from a device
-        } else if (status == EmpaStatus.DISCONNECTED) {
-
-            //updateLabel(deviceNameLabel, "");
-
-            //hide();
-        }
-    }
 
     @Override
     public void didEstablishConnection() {
