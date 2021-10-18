@@ -39,6 +39,7 @@ import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.SignInUIOptions;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.core.model.temporal.Temporal;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
@@ -96,6 +97,13 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
         batteryLabel = (TextView) findViewById(R.id.txt_battery);
 //        deviceNameLabel = (TextView) findViewById(R.id.deviceName);
 
+        authenticate();
+        init_amplify();
+//        test_db();
+        initEmpaticaDeviceManager();
+    }
+
+    private void authenticate() {
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
             @Override
             public void onResult(UserStateDetails userStateDetails) {
@@ -103,13 +111,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                     case SIGNED_IN:
                         userName = AWSMobileClient.getInstance().getUsername();
                         Log.i(TAG, "userName: " + userName);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                TextView textView = (TextView) findViewById(R.id.text);
-//                                textView.setText("Logged IN");
-//                            }
-//                        });
                         break;
                     case SIGNED_OUT:
                         try {
@@ -119,13 +120,6 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
                         }
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                TextView textView = (TextView) findViewById(R.id.text);
-//                                textView.setText("Logged OUT");
-//                            }
-//                        });
                         break;
                     default:
                         AWSMobileClient.getInstance().signOut();
@@ -138,26 +132,27 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
                 Log.e("INIT", e.toString());
             }
         });
+    }
 
-
+    private void init_amplify() {
         try {
             Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
             Log.i(TAG, "Initialized Amplify");
         } catch (AmplifyException error) {
             Log.e(TAG, "Could not initialize Amplify", error);
         }
+    }
 
+    private void test_db() {
+        // wait for authentication to set the username
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-
         writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
-
-//        initEmpaticaDeviceManager();
-
     }
 
     @Override
