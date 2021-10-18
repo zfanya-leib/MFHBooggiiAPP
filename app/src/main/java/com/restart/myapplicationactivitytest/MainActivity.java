@@ -384,14 +384,14 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-//        updateLabel(accel_xLabel, "" + x);
-//        updateLabel(accel_yLabel, "" + y);
-//        updateLabel(accel_zLabel, "" + z);
+        writeMeasurementToDb("ACC_X", x, (long) timestamp);
+        writeMeasurementToDb("ACC_Y", y, (long) timestamp);
+        writeMeasurementToDb("ACC_Z", z, (long) timestamp);
     }
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        //updateLabel(bvpLabel, "" + bvp);
+        writeBvpToDb((double) bvp, timestamp);
     }
 
     @Override
@@ -404,22 +404,53 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
     public void didReceiveGSR(float gsr, double timestamp) {
         updateLabel(edaLabel, String.format("%.2f", gsr));
         updateProgress(gsr);
+        writeEdaToDb((double) gsr, timestamp);
     }
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
         Log.i(TAG, "didReceiveIBI" + ibi);
         ibiArray.push(ibi);
-        updateLabel(bpmLabel, "" + calcBpm().intValue());
-        updateLabel(hrvLabel, "" + (int)calcHrv());
         writeIbiToDb((double) ibi, timestamp);
+
+        Double hr = calcBpm();
+        updateLabel(bpmLabel, "" + hr.intValue());
+        writeIbiToDb(hr, timestamp);
+
+        float hrv = calcHrv();
+        updateLabel(hrvLabel, "" + (int)hrv);
+        writeHrvToDb(hr, timestamp);
     }
 
     private void writeIbiToDb(double ibi, double timestamp) {
+        writeMeasurementToDb("IBI", ibi, (long) timestamp);
+    }
+
+    private void writeHrToDb(double hr, double timestamp) {
+        writeMeasurementToDb("HR", hr, (long) timestamp);
+    }
+
+    private void writeHrvToDb(double hrv, double timestamp) {
+        writeMeasurementToDb("HRV", hrv, (long) timestamp);
+    }
+
+    private void writeEdaToDb(double eda, double timestamp) {
+        writeMeasurementToDb("EDA", eda, (long) timestamp);
+    }
+
+    private void writeBvpToDb(double bvp, double timestamp) {
+        writeMeasurementToDb("BVP", bvp, (long) timestamp);
+    }
+
+    private void writeTemperatureToDb(double temp, double timestamp) {
+        writeMeasurementToDb("TEMPERATURE", temp, (long) timestamp);
+    }
+
+    private void writeMeasurementToDb(String name, double value, long timestamp) {
         Measurement item = Measurement.builder()
-                .name("IBI")
-                .value(ibi)
-                .timestamp(new Temporal.Timestamp((long) timestamp, TimeUnit.SECONDS))
+                .name(name)
+                .value(value)
+                .timestamp(new Temporal.Timestamp(timestamp, TimeUnit.SECONDS))
                 .username(userName)
                 .build();
         Amplify.DataStore.save(
@@ -467,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements EmpaDataDelegate,
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
-//        updateLabel(temperatureLabel, "" + temp);
+        writeTemperatureToDb(temp, timestamp);
     }
 
     // Update a label with some text, making sure this is run in the UI thread
