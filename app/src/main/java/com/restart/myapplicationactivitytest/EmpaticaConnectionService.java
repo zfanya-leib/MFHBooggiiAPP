@@ -8,6 +8,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,7 +48,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
 
     private static EmpaticaConnectionService _instance = null;
-
+    private EmpaStatus connectionStatus = EmpaStatus.INITIAL;
     private EmpaDeviceManager deviceManager = null;
 
     @Override
@@ -68,6 +69,10 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                     break;
                 case Constants.ACTION_STOP_FOREGROUND_SERVICE:
                     stopForegroundService(intent);
+                    break;
+                case Constants.ACTION_SERVICE_CONNECTION_STATUS:
+                    statusNotification();
+                    break;
             }
         }
 
@@ -93,6 +98,22 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private void stopForegroundService(Intent intent){
         stopService(intent);
         _instance = null;
+    }
+
+    private void statusNotification(){
+        if(this.deviceManager == null){
+            initEmpaticaDeviceManager();
+            return;
+        }
+
+        if(this.connectionStatus == EmpaStatus.CONNECTED){
+            onReciveUpdate(Constants.CONNECTED,0);
+        }
+        else{
+            onReciveUpdate(Constants.DISCONNECTED,0);
+        }
+
+
     }
 
     private void createNotificationChannel() {
@@ -187,12 +208,14 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
             // Start scanning
             deviceManager.startScanning();
 
+
             // The device manager has established a connection
         } else if (status == EmpaStatus.CONNECTED) {
-
+            connectionStatus = EmpaStatus.CONNECTED;
             onReciveUpdate(Constants.CONNECTED,0);
             // The device manager disconnected from a device
         } else if (status == EmpaStatus.DISCONNECTED) {
+            connectionStatus = EmpaStatus.DISCONNECTED;
             deviceManager.startScanning();
             onReciveUpdate(Constants.DISCONNECTED,0);
         }

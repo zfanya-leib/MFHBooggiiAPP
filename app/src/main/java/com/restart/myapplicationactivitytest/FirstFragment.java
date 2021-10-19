@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -137,6 +138,15 @@ public class FirstFragment extends Fragment {
         registerReceiver();
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent serviceIntent = new Intent(getActivity(), EmpaticaConnectionService.class);
+        serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
+        serviceIntent.setAction(Constants.ACTION_SERVICE_CONNECTION_STATUS);
+        ContextCompat.startForegroundService(getActivity(), serviceIntent);
     }
 
     public EventsHandler getHandler(){
