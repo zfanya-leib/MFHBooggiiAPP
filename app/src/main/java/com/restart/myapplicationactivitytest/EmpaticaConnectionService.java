@@ -1,5 +1,8 @@
 package com.restart.myapplicationactivitytest;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -7,7 +10,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,13 +19,18 @@ import android.os.Build;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.model.temporal.Temporal;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Measurement;
 import com.empatica.empalink.ConnectionNotAllowedException;
 import com.empatica.empalink.EmpaDeviceManager;
 import com.empatica.empalink.EmpaticaDevice;
@@ -32,9 +39,13 @@ import com.empatica.empalink.config.EmpaStatus;
 import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import common.Constants;
 
@@ -49,6 +60,11 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private static EmpaticaConnectionService _instance = null;
 
     private EmpaDeviceManager deviceManager = null;
+    private String userName = "ronenbh";
+    private List<Measurement> measurements = new ArrayList<Measurement>(1001);
+    static final int DEFAULT_THREAD_POOL_SIZE = 4;
+
+    ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
 
     @Override
     public void onCreate() {
@@ -87,6 +103,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                     .setContentIntent(pendingIntent)
                     .build();
             startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+            init_amplify();
             initEmpaticaDeviceManager();
     }
 
@@ -129,6 +146,32 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         return super.stopService(name);
     }
 
+
+    private void init_amplify() {
+        try {
+//            userName = AWSMobileClient.getInstance().getUsername();
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
+            Log.i(TAG, "Initialized Amplify");
+            Amplify.DataStore.clear(
+                    () -> Log.i("MyAmplifyApp", "DataStore is cleared."),
+                    failure -> Log.e("MyAmplifyApp", "Failed to clear DataStore.")
+            );
+        } catch (AmplifyException error) {
+            Log.e(TAG, "Could not initialize Amplify", error);
+        }
+    }
+
+    private void test_db() {
+        // wait for authentication to set the username
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+        writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
+    }
 
     private void initEmpaticaDeviceManager() {
         // Android 6 (API level 23) now require ACCESS_COARSE_LOCATION permission to use BLE
@@ -245,43 +288,42 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
         Log.i(TAG, "EDA value:" + gsr);
+        writeEdaToDb((double) gsr, timestamp);
         onReciveUpdate(Constants.EDA,gsr);
     }
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-
+        writeBvpToDb((double) bvp, timestamp);
     }
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
         Log.i(TAG, "didReceiveIBI" + ibi);
         ibiArray.push(ibi);
-        Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
-        Double bpm = 60 / sum * ibiArray.size();
-        Log.i(TAG, "bpm: " + bpm);
 
+        writeIbiToDb((double) ibi, timestamp);
+
+        Double bpm = calcBpm();
+//        writeHrToDb(bpm, timestamp);
+
+        float hrv = calcHrv();
+//        writeHrvToDb(hrv, timestamp);
+
+        onReciveUpdate(Constants.HRV,(int) hrv);
         onReciveUpdate(Constants.BPM, bpm.intValue());
-
-        float rmssdTotal = 0;
-
-        for (int i = 1; i < ibiArray.size(); i++) {
-            rmssdTotal += pow((ibiArray.get(i - 1) - ibiArray.get(i)) * 1000, 2);
-        }
-
-        float rmssd = (float) sqrt(rmssdTotal / (ibiArray.size() - 1));
-        Log.i(TAG, "rmssd: " + rmssd);
-        onReciveUpdate(Constants.HRV,(int) rmssd);
     }
 
     @Override
     public void didReceiveTemperature(float t, double timestamp) {
-
+        writeTemperatureToDb((double) t, timestamp);
     }
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-
+        writeMeasurementToDb("ACC_X", x, (long) timestamp);
+        writeMeasurementToDb("ACC_Y", y, (long) timestamp);
+        writeMeasurementToDb("ACC_Z", z, (long) timestamp);
     }
 
     @Override
@@ -303,16 +345,117 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         this.sendBroadcast(updateIntent);
     }
 
-
-
-
     @Override
     public void didEstablishConnection() {
-
     }
 
     @Override
     public void didUpdateSensorStatus(int status, EmpaSensorType type) {
 
     }
+
+    private void writeIbiToDb(double ibi, double timestamp) {
+        writeMeasurementToDb("IBI", ibi, (long) timestamp);
+    }
+
+    private void writeHrToDb(double hr, double timestamp) {
+        writeMeasurementToDb("HR", hr, (long) timestamp);
+    }
+
+    private void writeHrvToDb(double hrv, double timestamp) {
+        writeMeasurementToDb("HRV", hrv, (long) timestamp);
+    }
+
+    private void writeEdaToDb(double eda, double timestamp) {
+        writeMeasurementToDb("EDA", eda, (long) timestamp);
+    }
+
+    private void writeBvpToDb(double bvp, double timestamp) {
+        writeMeasurementToDb("BVP", bvp, (long) timestamp);
+    }
+
+    private void writeTemperatureToDb(double temp, double timestamp) {
+        writeMeasurementToDb("TEMPERATURE", temp, (long) timestamp);
+    }
+
+    private void writeMeasurementToDb(String name, double value, long timestamp) {
+        Measurement item = Measurement.builder()
+                .name(name)
+                .value(value)
+                .timestamp(new Temporal.Timestamp(timestamp, TimeUnit.SECONDS))
+                .username(userName)
+                .build();
+        measurements.add(item);
+        if (measurements.size() > 1000) {
+            final List<Measurement> measurements_copy = new ArrayList<Measurement>(measurements);
+            measurements.clear();
+            executorService.execute(new Runnable(){
+                @Override
+                public void run() {
+                    for (Measurement m : measurements_copy) {
+                        Amplify.DataStore.save(
+                                m,
+                                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
+                                error -> Log.e("Amplify", "Could not save item to DataStore", error)
+                        );
+                    }
+                }
+            });
+        }
+//        Measurement item = Measurement.builder()
+//                .name(name)
+//                .value(value)
+//                .timestamp(new Temporal.Timestamp(timestamp, TimeUnit.SECONDS))
+//                .username(userName)
+//                .build();
+//        measurements.add(item);
+//        if (measurements.size() > 1000) {
+//            for (Measurement m : measurements) {
+//        Amplify.DataStore.save(
+//                item,
+//                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
+//                error -> Log.e("Amplify", "Could not save item to DataStore", error)
+//        );
+//            }
+//            measurements.clear();
+//        }
+    }
+
+    private float calcHrv() {
+        float rmssdTotal = 0;
+
+        for (int i = 1; i < ibiArray.size(); i++) {
+            rmssdTotal += pow((ibiArray.get(i - 1) - ibiArray.get(i)) * 1000, 2);
+        }
+
+        float rmssd = (float) sqrt(rmssdTotal / (ibiArray.size() - 1));
+        Log.i(TAG, "rmssd: " + rmssd);
+        return rmssd;
+        //        float rrTotal=0;
+//
+//        for (int i = 1; i < ibiArray.size(); i++) {
+//            rrTotal += ibiArray.get(i).intValue();
+//        }
+//
+//        float mrr = rrTotal / (ibiArray.size() - 1);
+//        float sdnnTotal = 0;
+//
+//        for (int i = 1; i < ibiArray.size(); i++) {
+//            sdnnTotal += pow(ibiArray.get(i).intValue() - mrr, 2);
+//        }
+//
+//        float sdnn = (float) sqrt(sdnnTotal / (ibiArray.size() - 1));
+//        updateLabel(hrvLabel, "" + (int) sdnn);
+
+    }
+
+    @NonNull
+    private Double calcBpm() {
+        Double sum = ibiArray.stream().mapToDouble(Double::valueOf).sum();
+        Double bpm = 60 / sum * ibiArray.size();
+        Log.i(TAG, "bpm: " + bpm);
+        return bpm;
+    }
+
 }
+
