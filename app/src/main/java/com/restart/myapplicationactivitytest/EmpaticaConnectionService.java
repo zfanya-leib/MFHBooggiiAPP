@@ -103,7 +103,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                     .setContentIntent(pendingIntent)
                     .build();
             startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
-            init_amplify();
+            initAmplify();
             initEmpaticaDeviceManager();
     }
 
@@ -147,30 +147,42 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     }
 
 
-    private void init_amplify() {
+    private void initAmplify() {
         try {
 //            userName = AWSMobileClient.getInstance().getUsername();
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
             Log.i(TAG, "Initialized Amplify");
-            Amplify.DataStore.clear(
-                    () -> Log.i("MyAmplifyApp", "DataStore is cleared."),
-                    failure -> Log.e("MyAmplifyApp", "Failed to clear DataStore.")
-            );
+//            Amplify.DataStore.clear(
+//                    () -> Log.i("MyAmplifyApp", "DataStore is cleared."),
+//                    failure -> Log.e("MyAmplifyApp", "Failed to clear DataStore.")
+//            );
         } catch (AmplifyException error) {
             Log.e(TAG, "Could not initialize Amplify", error);
         }
     }
 
-    private void test_db() {
+    private void testDb() {
         // wait for authentication to set the username
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-        writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
+        executorService.execute(new Runnable(){
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
+                        TimeUnit.MILLISECONDS.sleep(1000);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                    }
+                }
+            }
+        });
     }
 
     private void initEmpaticaDeviceManager() {
