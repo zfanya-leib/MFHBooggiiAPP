@@ -1,0 +1,65 @@
+{
+    "UserAgent": "aws-amplify-cli/0.1.0",
+    "Version": "0.1.0",
+    "IdentityManager": {
+        "Default": {}
+    },
+    "CredentialsProvider": {
+        "CognitoIdentity": {
+            "Default": {
+                "PoolId": "us-east-2:a4ff9ce7-76bc-49e6-a7e0-6153a8f6e8eb",
+                "Region": "us-east-2"
+            }
+        }
+    },
+    "CognitoUserPool": {
+        "Default": {
+            "PoolId": "us-east-2_lYlesbtxF",
+            "AppClientId": "3srhdtpti1gfp51n8slmr8it6g",
+            "Region": "us-east-2"
+        }
+    },
+    "Auth": {
+        "Default": {
+            "authenticationFlowType": "USER_SRP_AUTH",
+            "loginMechanisms": [
+                "PREFERRED_USERNAME"
+            ],
+            "signupAttributes": [
+                "EMAIL"
+            ],
+            "passwordProtectionSettings": {
+                "passwordPolicyMinLength": 8,
+                "passwordPolicyCharacters": []
+            },
+            "mfaConfiguration": "OFF",
+            "mfaTypes": [
+                "SMS"
+            ],
+            "verificationMechanisms": [
+                "EMAIL"
+            ]
+        }
+    },
+    "AppSync": {
+        "Default": {
+            "ApiUrl": "https://v4fmvticnbechbzep6n5z4ojt4.appsync-api.us-east-2.amazonaws.com/graphql",
+            "Region": "us-east-2",
+            "AuthMode": "API_KEY",
+            "ApiKey": "da2-ackb4c6q7zadzmm22xcbfv4rpe",
+            "ClientDatabasePrefix": "MFHBooggiiAPP_API_KEY"
+        },
+        "MFHBooggiiAPP_AWS_IAM": {
+            "ApiUrl": "https://v4fmvticnbechbzep6n5z4ojt4.appsync-api.us-east-2.amazonaws.com/graphql",
+            "Region": "us-east-2",
+            "AuthMode": "AWS_IAM",
+            "ClientDatabasePrefix": "MFHBooggiiAPP_AWS_IAM"
+        },
+        "MFHBooggiiAPP_AMAZON_COGNITO_USER_POOLS": {
+            "ApiUrl": "https://v4fmvticnbechbzep6n5z4ojt4.appsync-api.us-east-2.amazonaws.com/graphql",
+            "Region": "us-east-2",
+            "AuthMode": "AMAZON_COGNITO_USER_POOLS",
+            "ClientDatabasePrefix": "MFHBooggiiAPP_AMAZON_COGNITO_USER_POOLS"
+        }
+    }
+}

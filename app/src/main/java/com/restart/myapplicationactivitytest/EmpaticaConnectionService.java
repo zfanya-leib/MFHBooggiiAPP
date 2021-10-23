@@ -26,12 +26,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
-//import com.amazonaws.mobileconnectors.iot.AWSIotMqttClientStatusCallback;
-//import com.amazonaws.mobileconnectors.iot.AWSIotMqttManager;
-//import com.amazonaws.mobileconnectors.iot.AWSIotMqttQos;
-import com.amazonaws.regions.Region;
-//import com.amazonaws.services.iot.AWSIotClient;
-//import com.amazonaws.services.iot.model.AttachPolicyRequest;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.core.Amplify;
@@ -61,13 +55,13 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     public static final String CHANNEL_ID = "EmpaticaServiceChannel";
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279";
-    private int max_last_ibi_samples_to_cache = 15;
+    private final int max_last_ibi_samples_to_cache = 15;
     private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
 
     private static EmpaticaConnectionService _instance = null;
 
     private EmpaDeviceManager deviceManager = null;
-    private String userName = "ronenbh";
+    private String userName = null;
     private List<Measurement> measurements = new ArrayList<Measurement>(1001);
     static final int DEFAULT_THREAD_POOL_SIZE = 4;
 
@@ -99,19 +93,21 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     private void startForegroundService(){
 
-            createNotificationChannel();
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                    0, notificationIntent, 0);
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("booggii et")
-                    .setContentText("Empatica Connection Service")
-                    .setSmallIcon(R.drawable.icon)
-                    .setContentIntent(pendingIntent)
-                    .build();
-            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
-            initAmplify();
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("booggii et")
+                .setContentText("Empatica Connection Service")
+                .setSmallIcon(R.drawable.icon)
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+        initAmplify();
+        testDb();
 //            initEmpaticaDeviceManager();
+
     }
 
     private void stopForegroundService(Intent intent){
@@ -156,44 +152,11 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     private void initAmplify() {
         try {
-//            try {
-//                TimeUnit.SECONDS.sleep(10);
-//            } catch (Exception e) {
-//                Log.e(TAG, e.toString());
-//            }
-//
-//            AttachPolicyRequest attachPolicyReq = new AttachPolicyRequest();
-//            attachPolicyReq.setPolicyName("myIOTPolicy"); // name of your IOT AWS policy
-//            attachPolicyReq.setTarget(AWSMobileClient.getInstance().getIdentityId());
-//            AWSIotClient mIotAndroidClient = new AWSIotClient(AWSMobileClient.getInstance());
-//            mIotAndroidClient.setRegion(Region.getRegion("<YOUR-AWS-REGION>")); // name of your IoT Region such as "us-east-1"
-//            mIotAndroidClient.attachPolicy(attachPolicyReq);
-//
-//            AWSIotMqttManager mqttManager = new AWSIotMqttManager(
-//                    "booggii1",
-//                    "a2dr8i7c180961-ats.iot.us-east-2.amazonaws.com");
-////            userName = AWSMobileClient.getInstance().getUsername();
-//
-//            try {
-//                mqttManager.connect(AWSMobileClient.getInstance(), new AWSIotMqttClientStatusCallback() {
-//                    @Override
-//                    public void onStatusChanged(final AWSIotMqttClientStatus status, final Throwable throwable) {
-//                        Log.d(TAG, "Connection Status: " + String.valueOf(status));
-//                    }
-//                });
-//            } catch (final Exception e) {
-//                Log.e(TAG, "Connection error: ", e);
-//            }
-//
-//            try {
-//                mqttManager.publishString("Hello to all subscribers!", "myTopic", AWSIotMqttQos.QOS0);
-//            } catch (Exception e) {
-//                Log.e(TAG, "Publish error: ", e);
-//            }
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
             Log.i(TAG, "Initialized Amplify");
+            userName = AWSMobileClient.getInstance().getUsername();
 //            Amplify.DataStore.clear(
 //                    () -> Log.i("MyAmplifyApp", "DataStore is cleared."),
 //                    failure -> Log.e("MyAmplifyApp", "Failed to clear DataStore.")
@@ -213,13 +176,11 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         executorService.execute(new Runnable(){
             @Override
             public void run() {
-                while (true) {
-                    try {
-                        writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
-                        TimeUnit.MILLISECONDS.sleep(1000);
-                    } catch (Exception e) {
-                        Log.e(TAG, e.toString());
-                    }
+                try {
+                    writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
                 }
             }
         });
@@ -340,13 +301,13 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
         Log.i(TAG, "EDA value:" + gsr);
-        writeEdaToDb((double) gsr, timestamp);
+        writeEdaToDb(gsr, timestamp);
         onReciveUpdate(Constants.EDA,gsr);
     }
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        writeBvpToDb((double) bvp, timestamp);
+        writeBvpToDb(bvp, timestamp);
     }
 
     @Override
@@ -354,7 +315,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         Log.i(TAG, "didReceiveIBI" + ibi);
         ibiArray.push(ibi);
 
-        writeIbiToDb((double) ibi, timestamp);
+        writeIbiToDb(ibi, timestamp);
 
         Double bpm = calcBpm();
 //        writeHrToDb(bpm, timestamp);
@@ -368,7 +329,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     @Override
     public void didReceiveTemperature(float t, double timestamp) {
-        writeTemperatureToDb((double) t, timestamp);
+        writeTemperatureToDb(t, timestamp);
     }
 
     @Override
@@ -437,40 +398,11 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                 .timestamp(new Temporal.Timestamp(timestamp, TimeUnit.SECONDS))
                 .username(userName)
                 .build();
-        measurements.add(item);
-        if (measurements.size() > 1000) {
-            final List<Measurement> measurements_copy = new ArrayList<Measurement>(measurements);
-            measurements.clear();
-            executorService.execute(new Runnable(){
-                @Override
-                public void run() {
-                    for (Measurement m : measurements_copy) {
-                        Amplify.DataStore.save(
-                                m,
-                                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
-                                error -> Log.e("Amplify", "Could not save item to DataStore", error)
-                        );
-                    }
-                }
-            });
-        }
-//        Measurement item = Measurement.builder()
-//                .name(name)
-//                .value(value)
-//                .timestamp(new Temporal.Timestamp(timestamp, TimeUnit.SECONDS))
-//                .username(userName)
-//                .build();
-//        measurements.add(item);
-//        if (measurements.size() > 1000) {
-//            for (Measurement m : measurements) {
-//        Amplify.DataStore.save(
-//                item,
-//                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
-//                error -> Log.e("Amplify", "Could not save item to DataStore", error)
-//        );
-//            }
-//            measurements.clear();
-//        }
+        Amplify.DataStore.save(
+                item,
+                success -> Log.i("Amplify", "Saved item: " + success.item().getId()),
+                error -> Log.e("Amplify", "Could not save item to DataStore", error)
+        );
     }
 
     private float calcHrv() {
