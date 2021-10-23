@@ -25,6 +25,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+//import com.amazonaws.mobileconnectors.iot.AWSIotMqttClientStatusCallback;
+//import com.amazonaws.mobileconnectors.iot.AWSIotMqttManager;
+//import com.amazonaws.mobileconnectors.iot.AWSIotMqttQos;
+import com.amazonaws.regions.Region;
+//import com.amazonaws.services.iot.AWSIotClient;
+//import com.amazonaws.services.iot.model.AttachPolicyRequest;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.core.Amplify;
@@ -104,7 +111,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                     .build();
             startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
             initAmplify();
-            initEmpaticaDeviceManager();
+//            initEmpaticaDeviceManager();
     }
 
     private void stopForegroundService(Intent intent){
@@ -149,7 +156,40 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     private void initAmplify() {
         try {
-//            userName = AWSMobileClient.getInstance().getUsername();
+//            try {
+//                TimeUnit.SECONDS.sleep(10);
+//            } catch (Exception e) {
+//                Log.e(TAG, e.toString());
+//            }
+//
+//            AttachPolicyRequest attachPolicyReq = new AttachPolicyRequest();
+//            attachPolicyReq.setPolicyName("myIOTPolicy"); // name of your IOT AWS policy
+//            attachPolicyReq.setTarget(AWSMobileClient.getInstance().getIdentityId());
+//            AWSIotClient mIotAndroidClient = new AWSIotClient(AWSMobileClient.getInstance());
+//            mIotAndroidClient.setRegion(Region.getRegion("<YOUR-AWS-REGION>")); // name of your IoT Region such as "us-east-1"
+//            mIotAndroidClient.attachPolicy(attachPolicyReq);
+//
+//            AWSIotMqttManager mqttManager = new AWSIotMqttManager(
+//                    "booggii1",
+//                    "a2dr8i7c180961-ats.iot.us-east-2.amazonaws.com");
+////            userName = AWSMobileClient.getInstance().getUsername();
+//
+//            try {
+//                mqttManager.connect(AWSMobileClient.getInstance(), new AWSIotMqttClientStatusCallback() {
+//                    @Override
+//                    public void onStatusChanged(final AWSIotMqttClientStatus status, final Throwable throwable) {
+//                        Log.d(TAG, "Connection Status: " + String.valueOf(status));
+//                    }
+//                });
+//            } catch (final Exception e) {
+//                Log.e(TAG, "Connection error: ", e);
+//            }
+//
+//            try {
+//                mqttManager.publishString("Hello to all subscribers!", "myTopic", AWSIotMqttQos.QOS0);
+//            } catch (Exception e) {
+//                Log.e(TAG, "Publish error: ", e);
+//            }
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());

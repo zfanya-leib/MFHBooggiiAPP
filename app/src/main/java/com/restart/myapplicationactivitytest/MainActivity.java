@@ -21,6 +21,8 @@ import com.amazonaws.mobile.client.SignInUIOptions;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
 
+import java.util.concurrent.TimeUnit;
+
 import common.Constants;
 
 
@@ -37,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         authenticate();
+//        try {
+//            TimeUnit.SECONDS.sleep(2);
+//        } catch (Exception e) {
+//            Log.e(TAG, e.toString());
+//        }
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         startService();

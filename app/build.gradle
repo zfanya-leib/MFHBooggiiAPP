@@ -58,6 +58,8 @@ dependencies {
     implementation 'com.amplifyframework:aws-datastore:1.28.2'
     implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.33.0'
     implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.33.0'
+//    implementation 'com.amazonaws:aws-android-sdk-iot:2.33.0'
+//    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.33.0'
 
     // Support for Java 8 features
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
