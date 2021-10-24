@@ -44,6 +44,18 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_img_walking" />
 
     <ImageButton
+        android:id="@+id/btn_img_closed_space"
+        android:layout_width="56dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_closed_space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_sleep" />
+
+    <ImageButton
         android:id="@+id/btn_img_media"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -87,6 +99,17 @@
         android:src="@drawable/resting_svgrepo_com"
         app:layout_constraintEnd_toStartOf="@+id/btn_img_sleep"
         app:layout_constraintTop_toTopOf="@+id/btn_img_sleep" />
+
+    <ImageButton
+        android:id="@+id/btn_img_crowded"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_crowded"
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_closed_space"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_closed_space" />
 
     <ImageButton
         android:id="@+id/img_btn_drug"
@@ -164,6 +187,28 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_img_sleep"
         app:layout_constraintStart_toStartOf="@+id/btn_img_sleep"
         app:layout_constraintTop_toBottomOf="@+id/btn_img_sleep" />
+
+    <TextView
+        android:id="@+id/txt_closed_space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="מקום סגור"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_sleep"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_closed_space"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_closed_space" />
+
+    <TextView
+        android:id="@+id/txt_crowded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="מקום הומה"
+        android:textColor="@color/general_text"
+        app:layout_constraintEnd_toEndOf="@+id/btn_img_crowded"
+        app:layout_constraintStart_toStartOf="@+id/btn_img_crowded"
+        app:layout_constraintTop_toBottomOf="@+id/btn_img_crowded" />
 
     <TextView
         android:id="@+id/txtrest"
