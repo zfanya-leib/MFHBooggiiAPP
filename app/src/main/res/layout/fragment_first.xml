@@ -97,8 +97,8 @@
         android:id="@+id/txt_bpm"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:maxLength="5"
         android:gravity="center"
+        android:maxLength="5"
         android:text="---"
         android:textColor="@color/general_text"
         android:textSize="32dp"
@@ -126,10 +126,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:maxLength="5"
         android:text="EDA"
         android:textColor="@color/general_text"
         android:textSize="20sp"
-        android:maxLength="5"
         app:layout_constraintBottom_toBottomOf="@+id/img_eda"
         app:layout_constraintStart_toEndOf="@+id/img_eda" />
 
@@ -139,9 +139,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:minWidth="400dp"
         android:max="30"
         android:min="0"
+        android:minWidth="400dp"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_eda" />
 
@@ -193,7 +193,7 @@
         app:layout_constraintTop_toTopOf="@+id/btn_img_indoor" />
 
     <ImageButton
-        android:id="@+id/btn_img_minor_attack"
+        android:id="@+id/btn_img_intervention_needed"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginEnd="4dp"
@@ -213,8 +213,8 @@
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_473826_add_new_plus_icon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_minor_attack"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_minor_attack" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_intervention_needed"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_intervention_needed" />
 
     <View
         android:id="@+id/divider"

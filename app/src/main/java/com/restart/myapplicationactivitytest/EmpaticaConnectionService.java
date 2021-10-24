@@ -105,9 +105,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                 .build();
         startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
         initAmplify();
-        testDb();
-//            initEmpaticaDeviceManager();
-
+        initEmpaticaDeviceManager();
     }
 
     private void stopForegroundService(Intent intent){

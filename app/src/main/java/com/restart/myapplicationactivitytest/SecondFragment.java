@@ -11,16 +11,19 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentSecondBinding;
 
+import controllers.EventsHandler;
+
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+    private EventsHandler handler;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
+        this.handler = new EventsHandler(getActivity());
         binding = FragmentSecondBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
@@ -35,6 +38,22 @@ public class SecondFragment extends Fragment {
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
               }
           });
+
+        binding.btnImgIncar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    handler.writeStartEventToDb("inCar");
+                } else {
+                    v.setSelected(false);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+                    handler.writeEndEventToDb("inCar");
+                }
+            }
+        });
+
 //        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

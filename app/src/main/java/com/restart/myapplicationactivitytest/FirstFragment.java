@@ -91,6 +91,34 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.btnImgInterventionNeeded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setRotation(v.getRotation() + 45);
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    handler.writeStartEventToDb("interventionNeeded");
+                } else {
+                    v.setSelected(false);
+                    handler.writeEndEventToDb("interventionNeeded");
+                }
+            }
+        });
+
+        binding.btnImgSevereAttack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setRotation(v.getRotation() + 45);
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    handler.writeStartEventToDb("majorEvent");
+                } else {
+                    v.setSelected(false);
+                    handler.writeEndEventToDb("majorEvent");
+                }
+            }
+        });
+
         binding.btnImgSos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
