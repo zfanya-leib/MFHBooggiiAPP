@@ -47,8 +47,12 @@ import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import common.Constants;
+import services.Streamer;
 
 public class EmpaticaConnectionService extends Service implements EmpaDataDelegate, EmpaStatusDelegate {
     private static final String TAG = "EmpaticaService";
@@ -64,6 +68,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private String userName = null;
     private List<Measurement> measurements = new ArrayList<Measurement>(1001);
     static final int DEFAULT_THREAD_POOL_SIZE = 4;
+    static final String formatter  = DateTimeFormatter.ISO_DATE_TIME;
 
     ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
 
@@ -332,9 +337,12 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
+        /*
         writeMeasurementToDb("ACC_X", x, (long) timestamp);
         writeMeasurementToDb("ACC_Y", y, (long) timestamp);
         writeMeasurementToDb("ACC_Z", z, (long) timestamp);
+         */
+        writeAccToDb(x, y, z, timestamp);
     }
 
     @Override
@@ -365,31 +373,42 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     }
 
-    private void writeIbiToDb(double ibi, double timestamp) {
-        writeMeasurementToDb("IBI", ibi, (long) timestamp);
+    private void writeAccToDb(int x, int y, int z, double timestamp) {
+        writeMeasurementToDb("ACC", x + "," + y + "," + z, timestamp);
     }
 
-    private void writeHrToDb(double hr, double timestamp) {
-        writeMeasurementToDb("HR", hr, (long) timestamp);
+    private void writeIbiToDb(float ibi, double timestamp) {
+        writeMeasurementToDb("IBI", Float.toString(ibi), timestamp);
     }
 
-    private void writeHrvToDb(double hrv, double timestamp) {
-        writeMeasurementToDb("HRV", hrv, (long) timestamp);
+    private void writeHrToDb(float hr, double timestamp) {
+        writeMeasurementToDb("HR", Float.toString(hr), timestamp);
     }
 
-    private void writeEdaToDb(double eda, double timestamp) {
-        writeMeasurementToDb("EDA", eda, (long) timestamp);
+    private void writeHrvToDb(float hrv, double timestamp) {
+        writeMeasurementToDb("HRV", Float.toString(hrv), timestamp);
     }
 
-    private void writeBvpToDb(double bvp, double timestamp) {
-        writeMeasurementToDb("BVP", bvp, (long) timestamp);
+    private void writeEdaToDb(float eda, double timestamp) {
+        writeMeasurementToDb("EDA", Float.toString(eba), timestamp);
     }
 
-    private void writeTemperatureToDb(double temp, double timestamp) {
-        writeMeasurementToDb("TEMPERATURE", temp, (long) timestamp);
+    private void writeBvpToDb(float bvp, double timestamp) {
+        writeMeasurementToDb("BVP", Float.toString(bvp), timestamp);
     }
 
-    private void writeMeasurementToDb(String name, double value, long timestamp) {
+    private void writeTemperatureToDb(float temp, double timestamp) {
+        writeMeasurementToDb("TEMP", Float.toString(temp), timestamp);
+    }
+
+    private void writeMeasurementToDb(String name, String value, double timestamp) {
+        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((long)timestamp*1000),
+                ZoneId.systemDefault());
+        Streamer.getInstance().addData("booggii-empatica-" + name.toLowerCase(),
+                userName + "," + value + "," + dateTime);
+    }
+
+    private void oldWriteToDb(String name, double value, long timestamp) {
         Measurement item = Measurement.builder()
                 .name(name)
                 .value(value)
