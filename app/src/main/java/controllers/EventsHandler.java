@@ -157,7 +157,6 @@ public class EventsHandler implements LocationListener {
     }
 
     public void onSOS() {
-
         if (!this.videoToggle) {
 
             this.isSoS = true;
@@ -174,7 +173,7 @@ public class EventsHandler implements LocationListener {
 
 
             // Vibrate for 400 milliseconds
-            this.vibrator.vibrate(VibrationEffect.createOneShot(20000,255));
+            this.vibrator.vibrate(VibrationEffect.createOneShot(10000,255));
 
             this.videoToggle = true;
             ImageView img = (ImageView) this.currentActivity.findViewById(R.id.imageView);
@@ -183,6 +182,8 @@ public class EventsHandler implements LocationListener {
             // select random video
             VideoView video = getVideoView();
             video.start();
+
+           // throw new RuntimeException("Test Crash");
         } else {
             if (this.sosRingtone.isPlaying()) {
                 this.sosRingtone.stop();
