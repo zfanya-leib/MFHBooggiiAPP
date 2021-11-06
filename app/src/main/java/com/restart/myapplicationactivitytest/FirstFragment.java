@@ -143,8 +143,6 @@ public class FirstFragment extends Fragment {
                 }
             }
         });
-
-        binding.pbEda.setProgress(10,true);
         registerReceiver();
     }
 
@@ -276,9 +274,10 @@ public class FirstFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ProgressBar edaProgress = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
-                if(edaProgress != null)
-                    edaProgress.setProgress(progress.intValue());
+                binding.pbEda.setProgress(progress.intValue());
+//                ProgressBar edaProgress = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
+//                if(edaProgress != null)
+//                    edaProgress.setProgress(progress.intValue());
             }
         });
     }
