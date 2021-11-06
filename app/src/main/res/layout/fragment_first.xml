@@ -142,6 +142,7 @@
         android:minWidth="400dp"
         android:max="30"
         android:min="0"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_eda" />
 
@@ -220,12 +221,12 @@
         android:id="@+id/divider"
         android:layout_width="400dp"
         android:layout_height="2dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="8dp"
         android:background="@color/light_blue_900"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEDA"
+        app:layout_constraintTop_toBottomOf="@+id/pb_eda"
         tools:visibility="visible" />
 
     <ImageView

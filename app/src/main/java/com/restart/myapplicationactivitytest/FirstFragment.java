@@ -25,7 +25,6 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import common.Constants;
@@ -133,12 +132,22 @@ public class FirstFragment extends Fragment {
                 if(disconectedRingtone != null && disconectedRingtone.isPlaying()){
                     disconectedRingtone.stop();
                 }
+                else{
+                    if(isInitial) {
+                        Intent serviceIntent = new Intent(getActivity(), EmpaticaConnectionService.class);
+                        serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
+                        serviceIntent.setAction(Constants.ACTION_START_E4_CONNECT);
+                        ContextCompat.startForegroundService(getActivity(), serviceIntent);
+                        showDisconnect();
+                    }
+                }
             }
         });
+
+        binding.pbEda.setProgress(10,true);
         registerReceiver();
-
-
     }
+
 
     @Override
     public void onResume() {
@@ -162,9 +171,9 @@ public class FirstFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(broadcastReceiver != null) {
-            getActivity().unregisterReceiver(broadcastReceiver);
-        }
+//        if(broadcastReceiver != null) {
+//            getActivity().unregisterReceiver(broadcastReceiver);
+//        }
     }
 
     private void registerReceiver() {
@@ -200,7 +209,8 @@ public class FirstFragment extends Fragment {
                         BluetoothAdapter.getDefaultAdapter().enable();
                         break;
                     case Constants.DISCONNECTED:
-                        showDisconnect();
+                        if(!isInitial)
+                            showDisconnect();
                         break;
                     case Constants.CONNECTED:
                         showConnected();
@@ -267,7 +277,8 @@ public class FirstFragment extends Fragment {
             @Override
             public void run() {
                 ProgressBar edaProgress = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
-                edaProgress.setProgress(progress.intValue());
+                if(edaProgress != null)
+                    edaProgress.setProgress(progress.intValue());
             }
         });
     }

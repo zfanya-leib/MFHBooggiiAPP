@@ -34,6 +34,8 @@ import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -46,6 +48,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279";
     private int max_last_ibi_samples_to_cache = 15;
     private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
+    private AtomicBoolean scanningComplete = new AtomicBoolean(false);
 
     private static EmpaticaConnectionService _instance = null;
     private EmpaStatus connectionStatus = EmpaStatus.INITIAL;
@@ -66,6 +69,9 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                         startForegroundService();
                         _instance = this;
                     }
+                    break;
+                case Constants.ACTION_START_E4_CONNECT:
+                    initEmpaticaDeviceManager();
                     break;
                 case Constants.ACTION_STOP_FOREGROUND_SERVICE:
                     stopForegroundService(intent);
@@ -92,7 +98,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                     .setContentIntent(pendingIntent)
                     .build();
             startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
-            initEmpaticaDeviceManager();
+            //initEmpaticaDeviceManager();
     }
 
     private void stopForegroundService(Intent intent){
@@ -102,7 +108,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     private void statusNotification(){
         if(this.deviceManager == null){
-            initEmpaticaDeviceManager();
+            //initEmpaticaDeviceManager();
             return;
         }
 
@@ -192,6 +198,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
 
+
             } catch (ConnectionNotAllowedException e) {
                 // This should happen only if you try to connect when allowed == false.
                 // TODO: send error notification
@@ -202,19 +209,24 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     @Override
     public void didUpdateStatus(EmpaStatus status) {
 
-        // The device manager is ready for use
+        // The device manager is reay for use
         if (status == EmpaStatus.READY) {
-            onReciveUpdate(Constants.DISCONNECTED,0);
-            // Start scanning
+            Log.i(TAG,"app is ready, start scanning for devices");
             deviceManager.startScanning();
+//            onReciveUpdate(Constants.DISCONNECTED,0);
+//            // Start scanning
+//            if(!scanningComplete.get())
+//                deviceManager.startScanning();
 
 
             // The device manager has established a connection
         } else if (status == EmpaStatus.CONNECTED) {
+            Log.i(TAG,"device is connected");
             connectionStatus = EmpaStatus.CONNECTED;
             onReciveUpdate(Constants.CONNECTED,0);
             // The device manager disconnected from a device
         } else if (status == EmpaStatus.DISCONNECTED) {
+            Log.i(TAG,"device was disconnected");
             connectionStatus = EmpaStatus.DISCONNECTED;
             deviceManager.startScanning();
             onReciveUpdate(Constants.DISCONNECTED,0);
@@ -223,10 +235,6 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     @Override
     public void didFailedScanning(int errorCode) {
-/*
-         A system error occurred while scanning.
-         @see https://developer.android.com/reference/android/bluetooth/le/ScanCallback
-        */
         switch (errorCode) {
             case ScanCallback.SCAN_FAILED_ALREADY_STARTED:
                 Log.e(TAG,"Scan failed: a BLE scan with the same settings is already started by the app");

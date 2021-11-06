@@ -14,6 +14,7 @@ public class Constants {
 
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
+    public static final String ACTION_START_E4_CONNECT = "ACTION_START_E4_CONNECT";
     public static final String ACTION_SERVICE_CONNECTION_STATUS = "ACTION_SERVICE_CONNECTION_STATUS";
 
     public static final String EMPATICA_CONNECTION = "EMPATICA_CONNECTION";
