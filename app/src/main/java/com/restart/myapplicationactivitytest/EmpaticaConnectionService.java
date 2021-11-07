@@ -68,7 +68,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private String userName = null;
     private List<Measurement> measurements = new ArrayList<Measurement>(1001);
     static final int DEFAULT_THREAD_POOL_SIZE = 4;
-    static final String formatter  = DateTimeFormatter.ISO_DATE_TIME;
+    static final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
 
@@ -180,7 +180,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
             @Override
             public void run() {
                 try {
-                    writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
+                    writeIbiToDb((float) 0.123, (double)Instant.now().toEpochMilli() / 1000);
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
@@ -390,7 +390,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     }
 
     private void writeEdaToDb(float eda, double timestamp) {
-        writeMeasurementToDb("EDA", Float.toString(eba), timestamp);
+        writeMeasurementToDb("EDA", Float.toString(eda), timestamp);
     }
 
     private void writeBvpToDb(float bvp, double timestamp) {

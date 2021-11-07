@@ -1,6 +1,7 @@
 package controllers;
 
 import android.Manifest;
+import androidx.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -405,6 +406,4 @@ public class EventsHandler implements LocationListener {
                 failure -> Log.e(TAG, "Query failed.", failure)
         );
     }
-
-
 }
