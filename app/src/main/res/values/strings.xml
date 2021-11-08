@@ -34,4 +34,7 @@
     <string name="back_btn">חזור</string>
     <string name="save_btn">שמור</string>
     <string name="eda_text">EDA Threshold</string>
+    <string name="text_label_media">מדיה</string>
+    <string name="text_label_info">הודעות</string>
+    <string name="text_label_thresholds">התראות</string>
 </resources>
