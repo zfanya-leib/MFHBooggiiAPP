@@ -35,6 +35,7 @@ import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -53,6 +54,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private static EmpaticaConnectionService _instance = null;
     private EmpaStatus connectionStatus = EmpaStatus.INITIAL;
     private EmpaDeviceManager deviceManager = null;
+    private final ReentrantLock lock = new ReentrantLock();
 
     @Override
     public void onCreate() {
@@ -118,8 +120,6 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         else{
             onReciveUpdate(Constants.DISCONNECTED,0);
         }
-
-
     }
 
     private void createNotificationChannel() {
@@ -191,10 +191,13 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         Log.i(TAG, "didDiscoverDevice" + deviceName + "allowed: " + allowed);
 
-        if (allowed) {
-            // Stop scanning. The first allowed device will do.
-            deviceManager.stopScanning();
+        if (allowed && !this.scanningComplete.get()) {
+            this.lock.lock();
+
             try {
+                // Stop scanning. The first allowed device will do.
+                this.scanningComplete.set(true);
+                deviceManager.stopScanning();
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
 
@@ -204,32 +207,40 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                 // TODO: send error notification
                 Log.e(TAG, "didDiscoverDevice" + deviceName + "allowed: " + allowed + " - ConnectionNotAllowedException", e);
             }
+            finally {
+                this.lock.unlock();
+            }
         }
     }
     @Override
     public void didUpdateStatus(EmpaStatus status) {
 
-        // The device manager is reay for use
-        if (status == EmpaStatus.READY) {
-            Log.i(TAG,"app is ready, start scanning for devices");
-            deviceManager.startScanning();
-//            onReciveUpdate(Constants.DISCONNECTED,0);
-//            // Start scanning
-//            if(!scanningComplete.get())
-//                deviceManager.startScanning();
+        // The device manager is ready for use
+        this.lock.lock();
+        try {
+            if (status == EmpaStatus.READY && !this.scanningComplete.get()) {
+                Log.i(TAG, "app is ready, start scanning for devices");
+                deviceManager.startScanning();
 
-
-            // The device manager has established a connection
-        } else if (status == EmpaStatus.CONNECTED) {
-            Log.i(TAG,"device is connected");
-            connectionStatus = EmpaStatus.CONNECTED;
-            onReciveUpdate(Constants.CONNECTED,0);
-            // The device manager disconnected from a device
-        } else if (status == EmpaStatus.DISCONNECTED) {
-            Log.i(TAG,"device was disconnected");
-            connectionStatus = EmpaStatus.DISCONNECTED;
-            deviceManager.startScanning();
-            onReciveUpdate(Constants.DISCONNECTED,0);
+                // The device manager has established a connection
+            } else if (status == EmpaStatus.CONNECTED) {
+                Log.i(TAG, "device is connected");
+                connectionStatus = EmpaStatus.CONNECTED;
+                onReciveUpdate(Constants.CONNECTED, 0);
+                // The device manager disconnected from a device
+            } else if (status == EmpaStatus.DISCONNECTED) {
+                Log.i(TAG, "device was disconnected");
+                scanningComplete.set(false);
+                connectionStatus = EmpaStatus.DISCONNECTED;
+                deviceManager.startScanning();
+                onReciveUpdate(Constants.DISCONNECTED, 0);
+            }
+        }
+        catch (Exception e){
+            Log.e(TAG,e.getLocalizedMessage());
+        }
+        finally {
+            this.lock.unlock();
         }
     }
 
@@ -333,8 +344,6 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
         this.sendBroadcast(updateIntent);
     }
-
-
 
 
     @Override

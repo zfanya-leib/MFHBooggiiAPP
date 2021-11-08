@@ -134,12 +134,14 @@ public class SettingsFragment extends Fragment {
                            
                             Intent data = result.getData();
                             Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                            SharedPreferences.Editor prefsEdit = getActivity().getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE).edit();
+                            if( uri != null) {
+                                SharedPreferences.Editor prefsEdit = getActivity().getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE).edit();
 
-                            prefsEdit.putString(Constants.RINGTONE,uri.toString());
-                            txtRingtone.setText(uri.getQueryParameter("title"));
-                            prefsEdit.putBoolean(Constants.DEFAULT_RINGTONE,false);
-                            prefsEdit.apply();
+                                prefsEdit.putString(Constants.RINGTONE, uri.toString());
+                                txtRingtone.setText(uri.getQueryParameter("title"));
+                                prefsEdit.putBoolean(Constants.DEFAULT_RINGTONE, false);
+                                prefsEdit.apply();
+                            }
                         }
                     }
                 });

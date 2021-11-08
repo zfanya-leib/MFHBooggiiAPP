@@ -169,9 +169,6 @@ public class FirstFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-//        if(broadcastReceiver != null) {
-//            getActivity().unregisterReceiver(broadcastReceiver);
-//        }
     }
 
     private void registerReceiver() {
@@ -185,13 +182,13 @@ public class FirstFragment extends Fragment {
 
                 switch (param) {
                     case Constants.EDA:
-                        if( loopCount% 10 == 0) {
-                            updateLabel((TextView) getActivity().findViewById(R.id.txt_eda), value.toString());
-                            updateProgress(value);
-                        }
-                        if(loopCount == 10000000) {
-                            loopCounter.set(0);
-                        }
+                        //if( loopCount% 10 == 0) {
+                        updateLabel((TextView) getActivity().findViewById(R.id.txt_eda), value.toString());
+                        updateProgress(value);
+                        //}
+//                        if(loopCount == 10000000) {
+//                            loopCounter.set(0);
+//                        }
                         handler.onEDAUpdate(value);
                         break;
                     case Constants.BPM:
@@ -275,9 +272,6 @@ public class FirstFragment extends Fragment {
             @Override
             public void run() {
                 binding.pbEda.setProgress(progress.intValue());
-//                ProgressBar edaProgress = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
-//                if(edaProgress != null)
-//                    edaProgress.setProgress(progress.intValue());
             }
         });
     }
