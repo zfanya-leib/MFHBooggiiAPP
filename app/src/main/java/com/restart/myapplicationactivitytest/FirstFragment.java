@@ -126,6 +126,13 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.imgBtnLocation2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.sendLocation2();
+            }
+        });
+
         binding.imgDisconnected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,7 +278,11 @@ public class FirstFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                binding.pbEda.setProgress(progress.intValue());
+                ProgressBar pb = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
+                if(pb != null){
+                  pb.setProgress(progress.intValue(), true);
+                }
+                //binding.pbEda.setProgress(progress.intValue());
             }
         });
     }

@@ -1,45 +1,28 @@
 package com.restart.myapplicationactivitytest;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.os.FileUtils;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.restart.myapplicationactivitytest.databinding.FragmentSettingsBinding;
-
-import java.io.File;
 
 import common.Constants;
 
@@ -96,7 +79,7 @@ public class SettingsFragment extends Fragment {
         txtCall2.setText(prefs.getString(Constants.PHONE_CALL_2,""));
 
         TextInputEditText txtLocation = (TextInputEditText)view.findViewById(R.id.txt_location_number);
-        txtLocation.setText(prefs.getString(Constants.PHONE_LOCATION,""));
+        txtLocation.setText(prefs.getString(Constants.PHONE_LOCATION_1,""));
 
         TextView txtRingtone = (TextView)view.findViewById(R.id.txt_ringtone);
         SharedPreferences.Editor prefsEdit = getActivity().getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE).edit();
@@ -213,7 +196,7 @@ public class SettingsFragment extends Fragment {
                 prefs.putInt(Constants.EDA_OUTDOOR_THRESHOLD,Integer.parseInt(txtOutEda.getText().toString()));
                 prefs.putString(Constants.PHONE_CALL_1,txtCall1.getText().toString());
                 prefs.putString(Constants.PHONE_CALL_2,txtCall2.getText().toString());
-                prefs.putString(Constants.PHONE_LOCATION,txtLocation.getText().toString());
+                prefs.putString(Constants.PHONE_LOCATION_1,txtLocation.getText().toString());
                 prefs.apply();
 
                 NavHostFragment.findNavController(SettingsFragment.this)

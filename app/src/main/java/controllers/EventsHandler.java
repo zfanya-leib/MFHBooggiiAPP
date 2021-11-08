@@ -5,12 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,7 +17,6 @@ import android.net.Uri;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -166,6 +162,7 @@ public class EventsHandler implements LocationListener {
             this.currentActivity.findViewById(R.id.img_btn_call1).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_call2).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_location).startAnimation(getAnimation());
+            this.currentActivity.findViewById(R.id.img_btn_location2).startAnimation(getAnimation());
 
             setRingtone();
             this.sosRingtone.setVolume(90);
@@ -197,6 +194,10 @@ public class EventsHandler implements LocationListener {
 
                 if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation()!=null) {
                     this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
+                }
+
+                if(this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation().cancel();
                 }
 
                 if(this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
@@ -307,11 +308,30 @@ public class EventsHandler implements LocationListener {
     public void sendLocationSms(){
         SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
 
-        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION,"");
+        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION_1,"");
+        String smsMessage = prefs.getString(Constants.EMERGENCY_SMS_TEXT,"");
         if(phoneNumber != ""){
             SmsManager smsManager = SmsManager.getDefault();
             StringBuffer smsBody = new StringBuffer();
-            smsBody.append("please come to help me ASAP!!!");
+            smsBody.append(smsMessage);
+            smsBody.append("\r\n");
+            smsBody.append("http://maps.google.com?q=");
+            smsBody.append(currentLocation.getLatitude());
+            smsBody.append(",");
+            smsBody.append(currentLocation.getLongitude());
+            smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), null, null);
+        }
+    }
+
+    public void sendLocationSms2(){
+        SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
+
+        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION_2,"");
+        String smsMessage = prefs.getString(Constants.EMERGENCY_SMS_TEXT,"");
+        if(phoneNumber != ""){
+            SmsManager smsManager = SmsManager.getDefault();
+            StringBuffer smsBody = new StringBuffer();
+            smsBody.append(smsMessage);
             smsBody.append("\r\n");
             smsBody.append("http://maps.google.com?q=");
             smsBody.append(currentLocation.getLatitude());
@@ -336,6 +356,16 @@ public class EventsHandler implements LocationListener {
            if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation() != null) {
                this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
            }
+        }
+    }
+
+    public void sendLocation2() {
+        if( this.isSoS && this.currentLocation != null) {
+            sendLocationSms2();
+
+            if(this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation() != null) {
+                this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation().cancel();
+            }
         }
     }
 

@@ -169,12 +169,37 @@
         android:layoutDirection="rtl"
         android:textDirection="rtl"
         android:gravity="start"
-        android:hint="מספר לשליחת מיקום בחירום"
+        android:hint="מספר לשליחת מיקום בחירום 1"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:layout_constraintTop_toBottomOf="@+id/settings_call2">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txt_location_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:textDirection="rtl"
+            android:gravity="start"
+            android:inputType="phone"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/settings_location2"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layoutDirection="rtl"
+        android:textDirection="rtl"
+        android:gravity="start"
+        android:hint="מספר לשליחת מיקום בחירום 2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@+id/settings_location">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txt_location_number2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layoutDirection="rtl"
@@ -191,7 +216,7 @@
         android:layout_marginTop="8dp"
         android:text="צליל חירום"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_location" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_location2" />
 
     <TextView
         android:id="@+id/txt_ringtone"

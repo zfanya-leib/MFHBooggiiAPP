@@ -12,27 +12,27 @@
         android:id="@+id/textViewHRV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="8dp"
         android:text="HRV"
         android:textColor="@color/general_text"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_eda"
-        app:layout_constraintStart_toStartOf="@+id/txt_battery" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/txt_bpm" />
 
     <TextView
         android:id="@+id/txt_hrv"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="bottom|end"
+        android:gravity="center"
+        android:maxLength="5"
         android:text="---"
-        android:textAlignment="textEnd"
         android:textColor="@color/general_text"
-        android:textSize="32dp"
-        app:layout_constraintBottom_toBottomOf="@id/textViewHRV"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewHRV"
         app:layout_constraintStart_toEndOf="@+id/textViewHRV" />
+
+
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier2"
@@ -74,43 +74,45 @@
         android:id="@+id/img_eda"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/_566829_emoji_emoticon_emotion_happy_smile_icon"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_hr" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="51dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
         android:gravity="bottom|left"
         android:text="BPM"
         android:textColor="@color/general_text"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/img_hr"
         app:layout_constraintStart_toEndOf="@+id/img_hr"
-        app:layout_constraintTop_toTopOf="@+id/gl_top"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@+id/gl_top" />
 
     <TextView
         android:id="@+id/txt_bpm"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:maxLength="5"
+        android:layout_marginStart="8dp"
         android:gravity="center"
+        android:maxLength="5"
         android:text="---"
         android:textColor="@color/general_text"
-        android:textSize="32dp"
+        android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <TextView
         android:id="@+id/txt_battery"
-        android:layout_width="106dp"
-        android:layout_height="59dp"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/_005774_battery_empty_power_status_icon"
         android:elegantTextHeight="true"
         android:gravity="center"
@@ -119,16 +121,16 @@
         android:textColor="@color/general_text"
         android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/gl_top" />
 
     <TextView
         android:id="@+id/textViewEDA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:text="EDA"
         android:textColor="@color/general_text"
-        android:textSize="20sp"
+        android:textSize="40sp"
         android:maxLength="5"
         app:layout_constraintBottom_toBottomOf="@+id/img_eda"
         app:layout_constraintStart_toEndOf="@+id/img_eda" />
@@ -136,12 +138,12 @@
     <ProgressBar
         android:id="@+id/pb_eda"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:minWidth="400dp"
         android:max="30"
         android:min="0"
+        android:minWidth="200dp"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/gl_left"
         app:layout_constraintTop_toBottomOf="@+id/img_eda" />
@@ -154,7 +156,7 @@
         android:text="--.--"
         android:textAlignment="textEnd"
         android:textColor="@color/general_text"
-        android:textSize="32dp"
+        android:textSize="64dp"
         app:layout_constraintBottom_toBottomOf="@+id/textViewEDA"
         app:layout_constraintStart_toEndOf="@+id/textViewEDA" />
 
@@ -221,7 +223,7 @@
         android:id="@+id/divider"
         android:layout_width="400dp"
         android:layout_height="2dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:background="@color/light_blue_900"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -288,9 +290,9 @@
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_070528_call_contact_emergency_hospital_medical_icon"
-        app:layout_constraintEnd_toEndOf="@+id/img_btn_location"
-        app:layout_constraintStart_toStartOf="@+id/img_btn_location"
-        app:layout_constraintTop_toBottomOf="@+id/img_btn_location" />
+        app:layout_constraintEnd_toEndOf="@+id/img_btn_location2"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_location2"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_location2" />
 
     <ImageButton
         android:id="@+id/img_btn_location"
@@ -303,6 +305,18 @@
         app:layout_constraintEnd_toEndOf="@+id/img_btn_drug"
         app:layout_constraintStart_toStartOf="@+id/img_btn_drug"
         app:layout_constraintTop_toBottomOf="@+id/img_btn_drug" />
+
+    <ImageButton
+        android:id="@+id/img_btn_location2"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/_961978_location_map_icon"
+        app:layout_constraintEnd_toEndOf="@+id/img_btn_location"
+        app:layout_constraintStart_toStartOf="@+id/img_btn_location"
+        app:layout_constraintTop_toBottomOf="@+id/img_btn_location" />
 
     <View
         android:id="@+id/divider3"
@@ -379,17 +393,18 @@
 
     <ImageView
         android:id="@+id/img_disconnected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="73dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="-20dp"
         android:src="@drawable/_016136_delete_smart_watch_icon"
         app:layout_constraintStart_toStartOf="@+id/txt_battery"
         app:layout_constraintTop_toBottomOf="@+id/txt_battery" />
 
     <ImageView
         android:id="@+id/img_connected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
+        android:layout_width="73dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="-10dp"
         android:src="@drawable/_016157_health_smart_watch_icon"
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/img_disconnected"
