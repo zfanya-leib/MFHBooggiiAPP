@@ -182,30 +182,35 @@ public class FirstFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                long loopCount = loopCounter.getAndIncrement();
-
                 String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
                 Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
 
                 switch (param) {
                     case Constants.EDA:
-                        //if( loopCount% 10 == 0) {
-                        updateLabel((TextView) getActivity().findViewById(R.id.txt_eda), value.toString());
-                        updateProgress(value);
-                        //}
-//                        if(loopCount == 10000000) {
-//                            loopCounter.set(0);
-//                        }
-                        handler.onEDAUpdate(value);
+                        TextView txtEDA =(TextView) getActivity().findViewById(R.id.txt_eda);
+                        if( txtEDA != null && value != null && value != -1 ) {
+                            updateLabel(txtEDA, value.toString());
+                            updateProgress(value);
+                            handler.onEDAUpdate(value);
+                        }
                         break;
                     case Constants.BPM:
-                        updateLabel((TextView) getActivity().findViewById(R.id.txt_bpm), value.toString());
+                        TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
+                        if(txtBpm != null && value != null && value != -1) {
+                            updateLabel(txtBpm, value.toString());
+                        }
                         break;
                     case Constants.HRV:
-                        updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
+                        TextView txtHRV = (TextView)getActivity().findViewById(R.id.txt_hrv);
+                        if( txtHRV != null && value != null && value != -1) {
+                            updateLabel(txtHRV, value.toString());
+                        }
                         break;
                     case Constants.BATTERY:
-                        updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),String.format("%.0f %%", value));
+                        TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
+                        if(txtBattery != null && value != null && value != -1) {
+                            updateLabel(txtBattery, String.format("%.0f %%", value));
+                        }
                         break;
                     case Constants.BLUETOOTH:
                         BluetoothAdapter.getDefaultAdapter().enable();

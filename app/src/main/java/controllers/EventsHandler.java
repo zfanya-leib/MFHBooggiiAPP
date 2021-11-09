@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
@@ -56,7 +57,7 @@ public class EventsHandler implements LocationListener {
     private ArrayList<Integer> videoArr=new ArrayList<>();
     private Location currentLocation;
     private boolean isSoS = false;
-
+   
 
     public EventsHandler(FragmentActivity activity) {
         this.currentActivity = activity;
@@ -181,7 +182,7 @@ public class EventsHandler implements LocationListener {
             VideoView video = getVideoView();
             video.start();
 
-           // throw new RuntimeException("Test Crash");
+
         } else {
             if (this.sosRingtone.isPlaying()) {
                 this.sosRingtone.stop();
@@ -190,6 +191,7 @@ public class EventsHandler implements LocationListener {
                     this.vibrator.cancel();
                 }
             } else {
+
                 this.currentActivity.findViewById(R.id.btn_img_sos).getAnimation().cancel();
 
                 if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation()!=null) {

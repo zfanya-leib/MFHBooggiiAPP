@@ -37,4 +37,6 @@
     <string name="text_label_media">מדיה</string>
     <string name="text_label_info">הודעות</string>
     <string name="text_label_thresholds">התראות</string>
+    <string name="settings_info">מידע</string>
+    <string name="settings_media">מדיה</string>
 </resources>

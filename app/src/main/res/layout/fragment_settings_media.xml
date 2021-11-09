@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".SettingsMediaFragment">
+
+    <Button
+        android:id="@+id/btn_select_ringtone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="צליל חירום"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_ringtone"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text=""
+        android:textDirection="rtl"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_select_ringtone"
+        app:layout_constraintTop_toTopOf="@+id/btn_select_ringtone" />
+
+    <Button
+        android:id="@+id/btn_select_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="בחר סירטון"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_select_ringtone" />
+
+    <TextView
+        android:id="@+id/txt_video"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text=""
+        android:textDirection="rtl"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_select_video"
+        app:layout_constraintTop_toTopOf="@+id/btn_select_video" />
+
+    <Button
+        android:id="@+id/btn_reset_video"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="x"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_select_ringtone" />
+
+    <Button
+        android:id="@+id/btn_back_from_media_settings"
+        android:layout_width="150dp"
+        android:layout_height="66dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="32dp"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="add"
+        android:text="@string/back_btn"
+        android:textColor="@color/general_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_media_save"
+        app:layout_constraintEnd_toStartOf="@+id/btn_media_save"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_media_save"
+        android:layout_width="150dp"
+        android:layout_height="66dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="600dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="add"
+        android:text="@string/save_btn"
+        android:textColor="@color/general_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_select_ringtone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
