@@ -32,3 +32,4 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+/app/libs/E4link-1.0.0.aar
