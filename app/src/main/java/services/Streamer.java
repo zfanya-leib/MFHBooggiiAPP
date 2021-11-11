@@ -41,18 +41,18 @@ public class Streamer {
                                 }
                         }
                 );
-                instance = new Streamer(context.getCacheDir(), Regions.US_EAST_2.toString());
+                instance = new Streamer(context.getCacheDir(), Regions.US_EAST_2);
 
         }
 
-        private Streamer(File dir, String region) {
-                recorder = new KinesisFirehoseRecorder(dir, Regions.fromName(region), AWSMobileClient.getInstance());
+        private Streamer(File dir, Regions region) {
+                recorder = new KinesisFirehoseRecorder(dir, region, AWSMobileClient.getInstance());
                 recorder.deleteAllRecords();
                 Log.i(TAG, "Kinesis Firehose Recorder ready");
         }
 
         public void addData(String stream, String data) {
-                recorder.saveRecord(data, stream);
+                recorder.saveRecord(data + '\n', stream);
                 if (!sending && System.currentTimeMillis() - lastSent > SEND_INTERVAL) {
                         send();
                 }
