@@ -24,6 +24,7 @@ import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
 import java.util.concurrent.TimeUnit;
 
 import common.Constants;
+import services.Streamer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         authenticate();
+        Streamer.init(getApplicationContext());
 //        try {
 //            TimeUnit.SECONDS.sleep(2);
 //        } catch (Exception e) {

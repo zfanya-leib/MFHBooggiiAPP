@@ -3,7 +3,6 @@
 /local.properties
 /.idea/*
 /.idea/*.*
-/.idea/libraries
 .DS_Store
 /build
 /captures
@@ -32,3 +31,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+/app/libs/E4link-1.0.0.aar

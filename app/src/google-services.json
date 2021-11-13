@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "932546263187",
+    "project_id": "booggii-et",
+    "storage_bucket": "booggii-et.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932546263187:android:166cf6c20ee466c644b566",
+        "android_client_info": {
+          "package_name": "com.restart.myapplicationactivitytest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "932546263187-mk4nhglstdqf24r7nl1omh2i6qm7324b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeDnLnyGiDfS4osqzBdYmk-H1kBIeY7tg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "932546263187-mk4nhglstdqf24r7nl1omh2i6qm7324b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,7 +6,9 @@ public class Constants {
     public static final String EDA_OUTDOOR_THRESHOLD = "EDA_OUTDOOR_THRESHOLD";
     public static final String PHONE_CALL_1 = "PHONE_CALL_1";
     public static final String PHONE_CALL_2 = "PHONE_CALL_2";
-    public static final String PHONE_LOCATION = "PHONE_LOCATION";
+    public static final String PHONE_LOCATION_1 = "PHONE_LOCATION_1";
+    public static final String PHONE_LOCATION_2 = "PHONE_LOCATION_2";
+    public static final String EMERGENCY_SMS_TEXT = "EMERGENCY_SMS_TEXT";
     public static final String RINGTONE = "RINGTONE";
     public static final String DEFAULT_RINGTONE = "DEFAULT_RINGTONE";
     public static final String VIDEO = "VIDEO";
@@ -14,6 +16,8 @@ public class Constants {
 
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
+    public static final String ACTION_START_E4_CONNECT = "ACTION_START_E4_CONNECT";
+    public static final String ACTION_SERVICE_CONNECTION_STATUS = "ACTION_SERVICE_CONNECTION_STATUS";
 
     public static final String EMPATICA_CONNECTION = "EMPATICA_CONNECTION";
     public static final String EMPATICA_MONITOR = "EMPATICA_MONITOR";

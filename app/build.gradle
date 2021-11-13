@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -44,6 +46,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
     implementation 'com.empatica.empalink:E4link:1.0.0@aar'
+    implementation 'com.google.firebase:firebase-bom:29.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'org.jetbrains:annotations:15.0'
     implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
@@ -58,6 +63,8 @@ dependencies {
     implementation 'com.amplifyframework:aws-datastore:1.28.2'
     implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.33.0'
     implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.33.0'
+    implementation 'com.amazonaws:aws-android-sdk-kinesis:2.27.0'
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.33.0'
 
     // Support for Java 8 features
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'

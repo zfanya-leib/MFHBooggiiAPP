@@ -1,6 +1,7 @@
 package controllers;
 
 import android.Manifest;
+import androidx.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,8 +10,6 @@ import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -41,7 +40,10 @@ import com.restart.myapplicationactivitytest.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import common.Constants;
@@ -169,7 +171,6 @@ public class EventsHandler implements LocationListener {
     }
 
     public void onSOS() {
-
         if (!this.videoToggle) {
 
             this.isSoS = true;
@@ -178,6 +179,7 @@ public class EventsHandler implements LocationListener {
             this.currentActivity.findViewById(R.id.img_btn_call1).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_call2).startAnimation(getAnimation());
             this.currentActivity.findViewById(R.id.img_btn_location).startAnimation(getAnimation());
+            this.currentActivity.findViewById(R.id.img_btn_location2).startAnimation(getAnimation());
 
             setRingtone();
             this.sosRingtone.setVolume(90);
@@ -186,7 +188,7 @@ public class EventsHandler implements LocationListener {
 
 
             // Vibrate for 400 milliseconds
-            this.vibrator.vibrate(VibrationEffect.createOneShot(20000,255));
+            this.vibrator.vibrate(VibrationEffect.createOneShot(10000,255));
 
             this.videoToggle = true;
             ImageView img = (ImageView) this.currentActivity.findViewById(R.id.imageView);
@@ -207,6 +209,10 @@ public class EventsHandler implements LocationListener {
 
                 if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation()!=null) {
                     this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
+                }
+
+                if(this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation()!=null) {
+                    this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation().cancel();
                 }
 
                 if(this.currentActivity.findViewById(R.id.img_btn_call1).getAnimation()!=null) {
@@ -317,11 +323,30 @@ public class EventsHandler implements LocationListener {
     public void sendLocationSms(){
         SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
 
-        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION,"");
+        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION_1,"");
+        String smsMessage = prefs.getString(Constants.EMERGENCY_SMS_TEXT,"");
         if(phoneNumber != ""){
             SmsManager smsManager = SmsManager.getDefault();
             StringBuffer smsBody = new StringBuffer();
-            smsBody.append("please come to help me ASAP!!!");
+            smsBody.append(smsMessage);
+            smsBody.append("\r\n");
+            smsBody.append("http://maps.google.com?q=");
+            smsBody.append(currentLocation.getLatitude());
+            smsBody.append(",");
+            smsBody.append(currentLocation.getLongitude());
+            smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), null, null);
+        }
+    }
+
+    public void sendLocationSms2(){
+        SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
+
+        String phoneNumber = prefs.getString(Constants.PHONE_LOCATION_2,"");
+        String smsMessage = prefs.getString(Constants.EMERGENCY_SMS_TEXT,"");
+        if(phoneNumber != ""){
+            SmsManager smsManager = SmsManager.getDefault();
+            StringBuffer smsBody = new StringBuffer();
+            smsBody.append(smsMessage);
             smsBody.append("\r\n");
             smsBody.append("http://maps.google.com?q=");
             smsBody.append(currentLocation.getLatitude());
@@ -346,6 +371,16 @@ public class EventsHandler implements LocationListener {
            if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation() != null) {
                this.currentActivity.findViewById(R.id.img_btn_location).getAnimation().cancel();
            }
+        }
+    }
+
+    public void sendLocation2() {
+        if( this.isSoS && this.currentLocation != null) {
+            sendLocationSms2();
+
+            if(this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation() != null) {
+                this.currentActivity.findViewById(R.id.img_btn_location2).getAnimation().cancel();
+            }
         }
     }
 
@@ -376,7 +411,7 @@ public class EventsHandler implements LocationListener {
     public void writeStartEventToDb(String name) {
         Event item = Event.builder()
                 .name(name)
-                .startLocalTime(new Temporal.DateTime(Calendar.getInstance().getTime(), 3 * 60 *60))
+                .startLocalTime(new Temporal.DateTime(Calendar.getInstance().getTime(), (int)(Calendar.getInstance().getTimeZone().getRawOffset() / 1000)))
                 .userName(AWSMobileClient.getInstance().getUsername())
                 .build();
         Amplify.DataStore.save(
@@ -394,7 +429,7 @@ public class EventsHandler implements LocationListener {
                     if (matches.hasNext()) {
                         Event original = matches.next();
                         Event edited = original.copyOfBuilder()
-                                .endLocalTime(new Temporal.DateTime(Calendar.getInstance().getTime(), 3 * 60 *60))
+                                .endLocalTime(new Temporal.DateTime(Calendar.getInstance().getTime(), (int)(Calendar.getInstance().getTimeZone().getRawOffset() / 1000)))
                                 .build();
                         Amplify.DataStore.save(edited,
                                 updated -> Log.i(TAG, "Updated a post."),
@@ -405,6 +440,4 @@ public class EventsHandler implements LocationListener {
                 failure -> Log.e(TAG, "Query failed.", failure)
         );
     }
-
-
 }

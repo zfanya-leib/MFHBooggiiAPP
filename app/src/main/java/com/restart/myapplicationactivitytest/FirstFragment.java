@@ -19,12 +19,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import common.Constants;
@@ -80,14 +80,58 @@ public class FirstFragment extends Fragment {
         binding.btnImgIndoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.setLocation(LocationType.INDOOR);
+                final String eventName = "outside"; // The report to db is only is_outside
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    binding.btnImgOutdoor.setSelected(false);
+                    binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+                    handler.writeEndEventToDb(eventName);
+                    handler.setLocation(LocationType.INDOOR);
+                }
             }
         });
 
         binding.btnImgOutdoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.setLocation(LocationType.OUTDOOR);
+                final String eventName = "outside";
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    binding.btnImgIndoor.setSelected(false);
+                    binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+                    handler.writeStartEventToDb(eventName);
+                    handler.setLocation(LocationType.OUTDOOR);
+                }
+            }
+        });
+
+        binding.btnImgInterventionNeeded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setRotation(v.getRotation() + 45);
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    handler.writeStartEventToDb("interventionNeeded");
+                } else {
+                    v.setSelected(false);
+                    handler.writeEndEventToDb("interventionNeeded");
+                }
+            }
+        });
+
+        binding.btnImgSevereAttack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setRotation(v.getRotation() + 45);
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    handler.writeStartEventToDb("majorEvent");
+                } else {
+                    v.setSelected(false);
+                    handler.writeEndEventToDb("majorEvent");
+                }
             }
         });
 
@@ -154,17 +198,41 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.imgBtnLocation2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.sendLocation2();
+            }
+        });
+
         binding.imgDisconnected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(disconectedRingtone != null && disconectedRingtone.isPlaying()){
                     disconectedRingtone.stop();
                 }
+                else{
+                    if(isInitial) {
+                        Intent serviceIntent = new Intent(getActivity(), EmpaticaConnectionService.class);
+                        serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
+                        serviceIntent.setAction(Constants.ACTION_START_E4_CONNECT);
+                        ContextCompat.startForegroundService(getActivity(), serviceIntent);
+                        showDisconnect();
+                    }
+                }
             }
         });
         registerReceiver();
+    }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent serviceIntent = new Intent(getActivity(), EmpaticaConnectionService.class);
+        serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
+        serviceIntent.setAction(Constants.ACTION_SERVICE_CONNECTION_STATUS);
+        ContextCompat.startForegroundService(getActivity(), serviceIntent);
     }
 
     public EventsHandler getHandler(){
@@ -180,45 +248,48 @@ public class FirstFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(broadcastReceiver != null) {
-            getActivity().unregisterReceiver(broadcastReceiver);
-        }
     }
 
     private void registerReceiver() {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                long loopCount = loopCounter.getAndIncrement();
-
                 String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
                 Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
 
                 switch (param) {
                     case Constants.EDA:
-                        if( loopCount% 10 == 0) {
-                            updateLabel((TextView) getActivity().findViewById(R.id.txt_eda), value.toString());
+                        TextView txtEDA =(TextView) getActivity().findViewById(R.id.txt_eda);
+                        if( txtEDA != null && value != null && value != -1 ) {
+                            updateLabel(txtEDA, value.toString());
                             updateProgress(value);
+                            handler.onEDAUpdate(value);
                         }
-                        if(loopCount == 10000000) {
-                            loopCounter.set(0);
-                        }
-                        handler.onEDAUpdate(value);
                         break;
                     case Constants.BPM:
-                        updateLabel((TextView) getActivity().findViewById(R.id.txt_bpm), value.toString());
+                        TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
+                        if(txtBpm != null && value != null && value != -1) {
+                            updateLabel(txtBpm, value.toString());
+                        }
                         break;
                     case Constants.HRV:
-                        updateLabel((TextView)getActivity().findViewById(R.id.txt_hrv),value.toString());
+                        TextView txtHRV = (TextView)getActivity().findViewById(R.id.txt_hrv);
+                        if( txtHRV != null && value != null && value != -1) {
+                            updateLabel(txtHRV, value.toString());
+                        }
                         break;
                     case Constants.BATTERY:
-                        updateLabel((TextView)getActivity().findViewById(R.id.txt_battery),String.format("%.0f %%", value));
+                        TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
+                        if(txtBattery != null && value != null && value != -1) {
+                            updateLabel(txtBattery, String.format("%.0f %%", value));
+                        }
                         break;
                     case Constants.BLUETOOTH:
                         BluetoothAdapter.getDefaultAdapter().enable();
                         break;
                     case Constants.DISCONNECTED:
-                        showDisconnect();
+                        if(!isInitial)
+                            showDisconnect();
                         break;
                     case Constants.CONNECTED:
                         showConnected();
@@ -284,8 +355,11 @@ public class FirstFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ProgressBar edaProgress = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
-                edaProgress.setProgress(progress.intValue());
+                ProgressBar pb = (ProgressBar) getActivity().findViewById(R.id.pb_eda);
+                if(pb != null){
+                  pb.setProgress(progress.intValue(), true);
+                }
+                //binding.pbEda.setProgress(progress.intValue());
             }
         });
     }

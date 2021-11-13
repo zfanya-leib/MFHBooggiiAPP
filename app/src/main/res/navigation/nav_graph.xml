@@ -38,4 +38,24 @@
             android:id="@+id/action_SettingsFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/SettingsInfoFragment"
+        android:name="com.restart.myapplicationactivitytest.SettingsInfoFragment"
+        android:label="SettingsInfo"
+        tools:layout="@layout/fragment_settings_info">
+
+        <action
+            android:id="@+id/action_SettingsInfoFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SettingsMediaFragment"
+        android:name="com.restart.myapplicationactivitytest.SettingsMediaFragment"
+        android:label="SettingsMedia"
+        tools:layout="@layout/fragment_settings_media">
+
+        <action
+            android:id="@+id/action_SettingsMediaFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
 </navigation>

@@ -10,6 +10,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,11 +46,20 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import common.Constants;
+import services.Streamer;
 
 public class EmpaticaConnectionService extends Service implements EmpaDataDelegate, EmpaStatusDelegate {
     private static final String TAG = "EmpaticaService";
@@ -57,13 +68,16 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279";
     private final int max_last_ibi_samples_to_cache = 15;
     private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
+    private AtomicBoolean scanningComplete = new AtomicBoolean(false);
 
     private static EmpaticaConnectionService _instance = null;
-
+    private EmpaStatus connectionStatus = EmpaStatus.INITIAL;
     private EmpaDeviceManager deviceManager = null;
+    private final ReentrantLock lock = new ReentrantLock();
     private String userName = null;
     private List<Measurement> measurements = new ArrayList<Measurement>(1001);
     static final int DEFAULT_THREAD_POOL_SIZE = 4;
+    static final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     ExecutorService executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
 
@@ -83,8 +97,15 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                         _instance = this;
                     }
                     break;
+                case Constants.ACTION_START_E4_CONNECT:
+                    initEmpaticaDeviceManager();
+                    break;
                 case Constants.ACTION_STOP_FOREGROUND_SERVICE:
                     stopForegroundService(intent);
+                    break;
+                case Constants.ACTION_SERVICE_CONNECTION_STATUS:
+                    statusNotification();
+                    break;
             }
         }
 
@@ -105,12 +126,25 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                 .build();
         startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
         initAmplify();
-        initEmpaticaDeviceManager();
     }
 
     private void stopForegroundService(Intent intent){
         stopService(intent);
         _instance = null;
+    }
+
+    private void statusNotification(){
+        if(this.deviceManager == null){
+            //initEmpaticaDeviceManager();
+            return;
+        }
+
+        if(this.connectionStatus == EmpaStatus.CONNECTED){
+            onReciveUpdate(Constants.CONNECTED,0);
+        }
+        else{
+            onReciveUpdate(Constants.DISCONNECTED,0);
+        }
     }
 
     private void createNotificationChannel() {
@@ -175,7 +209,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
             @Override
             public void run() {
                 try {
-                    writeIbiToDb(0.123, Instant.now().toEpochMilli() / 1000);
+                    writeIbiToDb((float) 0.123, (double)Instant.now().toEpochMilli() / 1000);
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
@@ -218,10 +252,13 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     public void didDiscoverDevice(EmpaticaDevice bluetoothDevice, String deviceName, int rssi, boolean allowed) {
         Log.i(TAG, "didDiscoverDevice" + deviceName + "allowed: " + allowed);
 
-        if (allowed) {
-            // Stop scanning. The first allowed device will do.
-            deviceManager.stopScanning();
+        if (allowed && !this.scanningComplete.get()) {
+            this.lock.lock();
+
             try {
+                // Stop scanning. The first allowed device will do.
+                this.scanningComplete.set(true);
+                deviceManager.stopScanning();
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
 
@@ -230,34 +267,45 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
                 // TODO: send error notification
                 Log.e(TAG, "didDiscoverDevice" + deviceName + "allowed: " + allowed + " - ConnectionNotAllowedException", e);
             }
+            finally {
+                this.lock.unlock();
+            }
         }
     }
     @Override
     public void didUpdateStatus(EmpaStatus status) {
 
         // The device manager is ready for use
-        if (status == EmpaStatus.READY) {
-            onReciveUpdate(Constants.DISCONNECTED,0);
-            // Start scanning
-            deviceManager.startScanning();
+        this.lock.lock();
+        try {
+            if (status == EmpaStatus.READY && !this.scanningComplete.get()) {
+                Log.i(TAG, "app is ready, start scanning for devices");
+                deviceManager.startScanning();
 
-            // The device manager has established a connection
-        } else if (status == EmpaStatus.CONNECTED) {
-
-            onReciveUpdate(Constants.CONNECTED,0);
-            // The device manager disconnected from a device
-        } else if (status == EmpaStatus.DISCONNECTED) {
-            deviceManager.startScanning();
-            onReciveUpdate(Constants.DISCONNECTED,0);
+                // The device manager has established a connection
+            } else if (status == EmpaStatus.CONNECTED) {
+                Log.i(TAG, "device is connected");
+                connectionStatus = EmpaStatus.CONNECTED;
+                onReciveUpdate(Constants.CONNECTED, 0);
+                // The device manager disconnected from a device
+            } else if (status == EmpaStatus.DISCONNECTED) {
+                Log.i(TAG, "device was disconnected");
+                scanningComplete.set(false);
+                connectionStatus = EmpaStatus.DISCONNECTED;
+                deviceManager.startScanning();
+                onReciveUpdate(Constants.DISCONNECTED, 0);
+            }
+        }
+        catch (Exception e){
+            Log.e(TAG,e.getLocalizedMessage());
+        }
+        finally {
+            this.lock.unlock();
         }
     }
 
     @Override
     public void didFailedScanning(int errorCode) {
-/*
-         A system error occurred while scanning.
-         @see https://developer.android.com/reference/android/bluetooth/le/ScanCallback
-        */
         switch (errorCode) {
             case ScanCallback.SCAN_FAILED_ALREADY_STARTED:
                 Log.e(TAG,"Scan failed: a BLE scan with the same settings is already started by the app");
@@ -332,9 +380,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-        writeMeasurementToDb("ACC_X", x, (long) timestamp);
-        writeMeasurementToDb("ACC_Y", y, (long) timestamp);
-        writeMeasurementToDb("ACC_Z", z, (long) timestamp);
+        writeAccToDb(x, y, z, timestamp);
     }
 
     @Override
@@ -365,31 +411,42 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
     }
 
-    private void writeIbiToDb(double ibi, double timestamp) {
-        writeMeasurementToDb("IBI", ibi, (long) timestamp);
+    private void writeAccToDb(int x, int y, int z, double timestamp) {
+        writeMeasurementToDb("ACC", x + "," + y + "," + z, timestamp);
     }
 
-    private void writeHrToDb(double hr, double timestamp) {
-        writeMeasurementToDb("HR", hr, (long) timestamp);
+    private void writeIbiToDb(float ibi, double timestamp) {
+        writeMeasurementToDb("IBI", Float.toString(ibi), timestamp);
     }
 
-    private void writeHrvToDb(double hrv, double timestamp) {
-        writeMeasurementToDb("HRV", hrv, (long) timestamp);
+    private void writeHrToDb(float hr, double timestamp) {
+        writeMeasurementToDb("HR", Float.toString(hr), timestamp);
     }
 
-    private void writeEdaToDb(double eda, double timestamp) {
-        writeMeasurementToDb("EDA", eda, (long) timestamp);
+    private void writeHrvToDb(float hrv, double timestamp) {
+        writeMeasurementToDb("HRV", Float.toString(hrv), timestamp);
     }
 
-    private void writeBvpToDb(double bvp, double timestamp) {
-        writeMeasurementToDb("BVP", bvp, (long) timestamp);
+    private void writeEdaToDb(float eda, double timestamp) {
+        writeMeasurementToDb("EDA", Float.toString(eda), timestamp);
     }
 
-    private void writeTemperatureToDb(double temp, double timestamp) {
-        writeMeasurementToDb("TEMPERATURE", temp, (long) timestamp);
+    private void writeBvpToDb(float bvp, double timestamp) {
+        writeMeasurementToDb("BVP", Float.toString(bvp), timestamp);
     }
 
-    private void writeMeasurementToDb(String name, double value, long timestamp) {
+    private void writeTemperatureToDb(float temp, double timestamp) {
+        writeMeasurementToDb("TEMP", Float.toString(temp), timestamp);
+    }
+
+    private void writeMeasurementToDb(String name, String value, double timestamp) {
+        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((long)timestamp*1000),
+                ZoneId.systemDefault());
+        Streamer.getInstance().addData("booggii-empatica-" + name.toLowerCase(),
+                userName + "," + value + "," + dateTime);
+    }
+
+    private void oldWriteToDb(String name, double value, long timestamp) {
         Measurement item = Measurement.builder()
                 .name(name)
                 .value(value)
