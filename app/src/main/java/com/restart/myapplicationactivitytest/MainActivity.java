@@ -3,6 +3,7 @@ package com.restart.myapplicationactivitytest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,9 +15,16 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.SignInUIOptions;
+import com.amazonaws.mobile.client.UserStateDetails;
 import com.restart.myapplicationactivitytest.databinding.ActivityMainBinding;
 
+import java.util.concurrent.TimeUnit;
+
 import common.Constants;
+import services.Streamer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,11 +39,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        authenticate();
+        Streamer.init(getApplicationContext());
+//        try {
+//            TimeUnit.SECONDS.sleep(2);
+//        } catch (Exception e) {
+//            Log.e(TAG, e.toString());
+//        }
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         startService();
+    }
+
+    private void authenticate() {
+        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
+            @Override
+            public void onResult(UserStateDetails userStateDetails) {
+                switch (userStateDetails.getUserState()){
+                    case SIGNED_IN:
+                        break;
+                    case SIGNED_OUT:
+                        try {
+                            AWSMobileClient.getInstance().showSignIn(MainActivity.this, SignInUIOptions.builder().build());
+                        } catch (Exception e) {
+                            Log.e(TAG, e.toString());
+                        }
+                        break;
+                    default:
+                        AWSMobileClient.getInstance().signOut();
+                        break;
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("INIT", e.toString());
+            }
+        });
     }
 
     public void startService() {

@@ -1,6 +1,7 @@
 package controllers;
 
 import android.Manifest;
+import androidx.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.net.Uri;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -29,10 +31,19 @@ import android.widget.VideoView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.model.query.Where;
+import com.amplifyframework.core.model.temporal.Temporal;
+import com.amplifyframework.datastore.generated.model.Event;
 import com.restart.myapplicationactivitytest.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import common.Constants;
@@ -57,7 +68,7 @@ public class EventsHandler implements LocationListener {
     private ArrayList<Integer> videoArr=new ArrayList<>();
     private Location currentLocation;
     private boolean isSoS = false;
-   
+    final String TAG = "EventsHandler";
 
     public EventsHandler(FragmentActivity activity) {
         this.currentActivity = activity;
@@ -75,6 +86,11 @@ public class EventsHandler implements LocationListener {
 
     public void setLocation(LocationType location){
         this.location = location;
+        if (location == LocationType.OUTDOOR){
+            writeStartEventToDb("outside");
+        } else {
+            writeEndEventToDb("outside");
+        }
     }
 
     public int getEDAThreshold(){
@@ -181,8 +197,6 @@ public class EventsHandler implements LocationListener {
             // select random video
             VideoView video = getVideoView();
             video.start();
-
-
         } else {
             if (this.sosRingtone.isPlaying()) {
                 this.sosRingtone.stop();
@@ -191,7 +205,6 @@ public class EventsHandler implements LocationListener {
                     this.vibrator.cancel();
                 }
             } else {
-
                 this.currentActivity.findViewById(R.id.btn_img_sos).getAnimation().cancel();
 
                 if(this.currentActivity.findViewById(R.id.img_btn_location).getAnimation()!=null) {
@@ -393,5 +406,38 @@ public class EventsHandler implements LocationListener {
         anim.setRepeatCount(Animation.INFINITE);
 
         return anim;
+    }
+
+    public void writeStartEventToDb(String name) {
+        Event item = Event.builder()
+                .name(name)
+                .startLocalTime(new Temporal.DateTime(Calendar.getInstance().getTime(), (int)(Calendar.getInstance().getTimeZone().getRawOffset() / 1000)))
+                .userName(AWSMobileClient.getInstance().getUsername())
+                .build();
+        Amplify.DataStore.save(
+                item,
+                success -> Log.i(TAG, "Saved item: " + success.item().getId()),
+                error -> Log.e(TAG, "Could not save item to DataStore", error)
+        );
+    }
+
+    public void writeEndEventToDb(String name) {
+        Amplify.DataStore.query(
+                Event.class,
+                Where.matches(Event.NAME.eq(name)).sorted(Event.START_LOCAL_TIME.descending()),
+                matches -> {
+                    if (matches.hasNext()) {
+                        Event original = matches.next();
+                        Event edited = original.copyOfBuilder()
+                                .endLocalTime(new Temporal.DateTime(Calendar.getInstance().getTime(), (int)(Calendar.getInstance().getTimeZone().getRawOffset() / 1000)))
+                                .build();
+                        Amplify.DataStore.save(edited,
+                                updated -> Log.i(TAG, "Updated a post."),
+                                failure -> Log.e(TAG, "Update failed.", failure)
+                        );
+                    }
+                },
+                failure -> Log.e(TAG, "Query failed.", failure)
+        );
     }
 }

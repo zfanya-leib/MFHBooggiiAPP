@@ -32,8 +32,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/textViewHRV"
         app:layout_constraintStart_toEndOf="@+id/textViewHRV" />
 
-
-
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier2"
         android:layout_width="wrap_content"
@@ -196,7 +194,7 @@
         app:layout_constraintTop_toTopOf="@+id/btn_img_indoor" />
 
     <ImageButton
-        android:id="@+id/btn_img_minor_attack"
+        android:id="@+id/btn_img_intervention_needed"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginEnd="4dp"
@@ -216,8 +214,8 @@
         android:backgroundTint="@color/white"
         android:scaleType="fitXY"
         android:src="@drawable/_473826_add_new_plus_icon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_img_minor_attack"
-        app:layout_constraintTop_toTopOf="@+id/btn_img_minor_attack" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_img_intervention_needed"
+        app:layout_constraintTop_toTopOf="@+id/btn_img_intervention_needed" />
 
     <View
         android:id="@+id/divider"
