@@ -80,14 +80,30 @@ public class FirstFragment extends Fragment {
         binding.btnImgIndoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.setLocation(LocationType.INDOOR);
+                final String eventName = "outside"; // The report to db is only is_outside
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    binding.btnImgOutdoor.setSelected(false);
+                    binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+                    handler.writeEndEventToDb(eventName);
+                    handler.setLocation(LocationType.INDOOR);
+                }
             }
         });
 
         binding.btnImgOutdoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.setLocation(LocationType.OUTDOOR);
+                final String eventName = "outside";
+                if (v.isSelected() == false) {
+                    v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    binding.btnImgIndoor.setSelected(false);
+                    binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+                    handler.writeStartEventToDb(eventName);
+                    handler.setLocation(LocationType.OUTDOOR);
+                }
             }
         });
 
