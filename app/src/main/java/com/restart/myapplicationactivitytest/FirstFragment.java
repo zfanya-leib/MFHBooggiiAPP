@@ -9,6 +9,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -268,50 +269,55 @@ public class FirstFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
-                Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
+                try{
+                    String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
+                    Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
 
-                switch (param) {
-                    case Constants.EDA:
-                        TextView txtEDA =(TextView) getActivity().findViewById(R.id.txt_eda);
-                        if( txtEDA != null && value != null && value != -1 ) {
-                            MainActivity.lastEda = value;
-                            updateLabel(txtEDA, value.toString());
-                            updateProgress(value);
-                            handler.onEDAUpdate(value);
-                        }
-                        break;
-                    case Constants.BPM:
-                        TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
-                        if(txtBpm != null && value != null && value != -1) {
-                            MainActivity.lastBpm = value;
-                            updateLabel(txtBpm, value.toString());
-                        }
-                        break;
-                    case Constants.HRV:
-                        TextView txtHRV = (TextView)getActivity().findViewById(R.id.txt_hrv);
-                        if( txtHRV != null && value != null && value != -1) {
-                            MainActivity.lastHrv = value;
-                            updateLabel(txtHRV, value.toString());
-                        }
-                        break;
-                    case Constants.BATTERY:
-                        TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
-                        if(txtBattery != null && value != null && value != -1) {
-                            MainActivity.lastBatteryLevel = value;
-                            updateLabel(txtBattery, String.format("%.0f %%", value));
-                        }
-                        break;
-                    case Constants.BLUETOOTH:
-                        BluetoothAdapter.getDefaultAdapter().enable();
-                        break;
-                    case Constants.DISCONNECTED:
-                        if(!isInitial)
-                            showDisconnect();
-                        break;
-                    case Constants.CONNECTED:
-                        showConnected();
-                        break;
+                    switch (param) {
+                        case Constants.EDA:
+                            TextView txtEDA =(TextView) getActivity().findViewById(R.id.txt_eda);
+                            if( txtEDA != null && value != null && value != -1 ) {
+                                MainActivity.lastEda = value;
+                                updateLabel(txtEDA, value.toString());
+                                updateProgress(value);
+                                handler.onEDAUpdate(value);
+                            }
+                            break;
+                        case Constants.BPM:
+                            TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
+                            if(txtBpm != null && value != null && value != -1) {
+                                MainActivity.lastBpm = value;
+                                updateLabel(txtBpm, value.toString());
+                            }
+                            break;
+                        case Constants.HRV:
+                            TextView txtHRV = (TextView)getActivity().findViewById(R.id.txt_hrv);
+                            if( txtHRV != null && value != null && value != -1) {
+                                MainActivity.lastHrv = value;
+                                updateLabel(txtHRV, value.toString());
+                            }
+                            break;
+                        case Constants.BATTERY:
+                            TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
+                            if(txtBattery != null && value != null && value != -1) {
+                                MainActivity.lastBatteryLevel = value;
+                                updateLabel(txtBattery, String.format("%.0f %%", value));
+                            }
+                            break;
+                        case Constants.BLUETOOTH:
+                            BluetoothAdapter.getDefaultAdapter().enable();
+                            break;
+                        case Constants.DISCONNECTED:
+                            if(!isInitial)
+                                showDisconnect();
+                            break;
+                        case Constants.CONNECTED:
+                            showConnected();
+                            break;
+                    }
+                }
+                catch(Exception e){
+                    Log.e("First Fragment","broadcast ui updated failed with error" + e.getLocalizedMessage());
                 }
             }
         };
