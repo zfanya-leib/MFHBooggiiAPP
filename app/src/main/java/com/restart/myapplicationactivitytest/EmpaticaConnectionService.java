@@ -94,17 +94,21 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
             switch (action) {
                 case Constants.ACTION_START_FOREGROUND_SERVICE:
                     if(_instance == null) {
+                        Log.i(TAG,"Constants.ACTION_START_FOREGROUND_SERVICE - started");
                         startForegroundService();
                         _instance = this;
                     }
                     break;
                 case Constants.ACTION_START_E4_CONNECT:
+                    Log.i(TAG,"Constants.ACTION_START_E4_CONNECT - started");
                     initEmpaticaDeviceManager();
                     break;
                 case Constants.ACTION_STOP_FOREGROUND_SERVICE:
+                    Log.i(TAG,"Constants.ACTION_STOP_FOREGROUND_SERVICE - started");
                     stopForegroundService(intent);
                     break;
                 case Constants.ACTION_SERVICE_CONNECTION_STATUS:
+                    Log.i(TAG,"Constants.ACTION_SERVICE_CONNECTION_STATUS - started");
                     statusNotification();
                     break;
             }
@@ -255,11 +259,12 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
 
         if (allowed && !this.scanningComplete.get()) {
             this.lock.lock();
-
+            Log.i(TAG, "didDiscoverDevice() - lock for stop scanning");
             try {
                 // Stop scanning. The first allowed device will do.
                 this.scanningComplete.set(true);
                 deviceManager.stopScanning();
+                Log.i(TAG, "didDiscoverDevice() - stop scanning");
                 // Connect to the device
                 deviceManager.connectDevice(bluetoothDevice);
 
@@ -280,17 +285,17 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         this.lock.lock();
         try {
             if (status == EmpaStatus.READY && !this.scanningComplete.get()) {
-                Log.i(TAG, "app is ready, start scanning for devices");
+                Log.i(TAG, "didUpdateStatus() - app is ready, start scanning for devices");
                 deviceManager.startScanning();
 
                 // The device manager has established a connection
             } else if (status == EmpaStatus.CONNECTED) {
-                Log.i(TAG, "device is connected");
+                Log.i(TAG, "didUpdateStatus() -device is connected");
                 connectionStatus = EmpaStatus.CONNECTED;
                 onReciveUpdate(Constants.CONNECTED, 0);
                 // The device manager disconnected from a device
             } else if (status == EmpaStatus.DISCONNECTED) {
-                Log.i(TAG, "device was disconnected");
+                Log.i(TAG, "didUpdateStatus() - device was disconnected");
                 scanningComplete.set(false);
                 connectionStatus = EmpaStatus.DISCONNECTED;
                 deviceManager.startScanning();
@@ -309,19 +314,19 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     public void didFailedScanning(int errorCode) {
         switch (errorCode) {
             case ScanCallback.SCAN_FAILED_ALREADY_STARTED:
-                Log.e(TAG,"Scan failed: a BLE scan with the same settings is already started by the app");
+                Log.e(TAG,"didFailedScanning() - Scan failed: a BLE scan with the same settings is already started by the app");
                 break;
             case ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
-                Log.e(TAG,"Scan failed: app cannot be registered");
+                Log.e(TAG,"didFailedScanning() -Scan failed: app cannot be registered");
                 break;
             case ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED:
-                Log.e(TAG,"Scan failed: power optimized scan feature is not supported");
+                Log.e(TAG,"didFailedScanning() -Scan failed: power optimized scan feature is not supported");
                 break;
             case ScanCallback.SCAN_FAILED_INTERNAL_ERROR:
-                Log.e(TAG,"Scan failed: internal error");
+                Log.e(TAG,"didFailedScanning() -Scan failed: internal error");
                 break;
             default:
-                Log.e(TAG,"Scan failed with unknown error (errorCode=" + errorCode + ")");
+                Log.e(TAG,"didFailedScanning() -Scan failed with unknown error (errorCode=" + errorCode + ")");
                 break;
         }
     }

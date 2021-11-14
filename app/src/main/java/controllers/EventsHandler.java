@@ -2,8 +2,13 @@ package controllers;
 
 import android.Manifest;
 import androidx.annotation.NonNull;
+
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -26,6 +31,7 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
@@ -53,7 +59,7 @@ import common.State;
 import static android.content.Context.MODE_PRIVATE;
 
 public class EventsHandler implements LocationListener {
-
+    private final String TAG = "EventsHandler";
     private float edaStatus;
     private State state = State.NORMAL;
     private int INITIAL_THREASHOLD_WAIT = 20;
@@ -68,7 +74,6 @@ public class EventsHandler implements LocationListener {
     private ArrayList<Integer> videoArr=new ArrayList<>();
     private Location currentLocation;
     private boolean isSoS = false;
-    final String TAG = "EventsHandler";
 
     public EventsHandler(FragmentActivity activity) {
         this.currentActivity = activity;
@@ -334,7 +339,68 @@ public class EventsHandler implements LocationListener {
             smsBody.append(currentLocation.getLatitude());
             smsBody.append(",");
             smsBody.append(currentLocation.getLongitude());
-            smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), null, null);
+
+            PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS SENT"), 0);
+
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS DELIVERED"), 0);
+
+            currentActivity.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context arg0, Intent arg1) {
+                    int resultCode = getResultCode();
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            Log.i(TAG,"sms send successfuly");
+                            break;
+                        case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                            Log.i(TAG,"failed to send sms, general sms error, probalby sms too long");
+                            break;
+                        case SmsManager.RESULT_ERROR_NO_SERVICE:
+                            Log.i(TAG,"failed to send sms, error no service");
+                            break;
+                        case SmsManager.RESULT_ERROR_NULL_PDU:
+                            Log.i(TAG,"failed to send sms, error null pdu");
+                            break;
+                        case SmsManager.RESULT_ERROR_RADIO_OFF:
+                            Log.i(TAG,"failed to send sms, radio is off");
+                            break;
+                    }
+                }
+            }, new IntentFilter("SMS SENT"));
+
+            currentActivity.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context arg0, Intent arg1) {
+                    int resultCode = getResultCode();
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            Log.i(TAG,"sms send successfuly");
+                            break;
+                        case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                            Log.i(TAG,"failed to send sms, general sms error, probalby sms too long");
+                            break;
+                        case SmsManager.RESULT_ERROR_NO_SERVICE:
+                            Log.i(TAG,"failed to send sms, error no service");
+                            break;
+                        case SmsManager.RESULT_ERROR_NULL_PDU:
+                            Log.i(TAG,"failed to send sms, error null pdu");
+                            break;
+                        case SmsManager.RESULT_ERROR_RADIO_OFF:
+                            Log.i(TAG,"failed to send sms, radio is off");
+                            break;
+                    }
+                }
+            }, new IntentFilter("SMS DELIVERED"));
+            ArrayList<String> smsParts = smsManager.divideMessage(smsBody.toString());
+            ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
+            ArrayList<PendingIntent> deliveredIntents = new ArrayList<>();
+            for(String part : smsParts){
+                pendingIntents.add(sentPI);
+                deliveredIntents.add(deliveredPI);
+            }
+            smsManager.sendMultipartTextMessage(phoneNumber, null, smsParts, pendingIntents, deliveredIntents);
+
+           // smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), sentPI, deliveredPI);
         }
     }
 
@@ -352,7 +418,67 @@ public class EventsHandler implements LocationListener {
             smsBody.append(currentLocation.getLatitude());
             smsBody.append(",");
             smsBody.append(currentLocation.getLongitude());
-            smsManager.sendTextMessage(phoneNumber, null, smsBody.toString(), null, null);
+
+            PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS SENT2"), 0);
+
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS DELIVERED2"), 0);
+
+            currentActivity.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context arg0, Intent arg1) {
+                    int resultCode = getResultCode();
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            Log.i(TAG,"sms send successfuly");
+                            break;
+                        case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                            Log.i(TAG,"failed to send sms, general sms error, probalby sms too long");
+                            break;
+                        case SmsManager.RESULT_ERROR_NO_SERVICE:
+                            Log.i(TAG,"failed to send sms, error no service");
+                            break;
+                        case SmsManager.RESULT_ERROR_NULL_PDU:
+                            Log.i(TAG,"failed to send sms, error null pdu");
+                            break;
+                        case SmsManager.RESULT_ERROR_RADIO_OFF:
+                            Log.i(TAG,"failed to send sms, radio is off");
+                            break;
+                    }
+                }
+            }, new IntentFilter("SMS SENT2"));
+
+            currentActivity.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context arg0, Intent arg1) {
+                    int resultCode = getResultCode();
+                    switch (resultCode) {
+                        case Activity.RESULT_OK:
+                            Log.i(TAG,"sms send successfuly");
+                            break;
+                        case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                            Log.i(TAG,"failed to send sms, general sms error, probalby sms too long");
+                            break;
+                        case SmsManager.RESULT_ERROR_NO_SERVICE:
+                            Log.i(TAG,"failed to send sms, error no service");
+                            break;
+                        case SmsManager.RESULT_ERROR_NULL_PDU:
+                            Log.i(TAG,"failed to send sms, error null pdu");
+                            break;
+                        case SmsManager.RESULT_ERROR_RADIO_OFF:
+                            Log.i(TAG,"failed to send sms, radio is off");
+                            break;
+                    }
+                }
+            }, new IntentFilter("SMS DELIVERED2"));
+            ArrayList<String> smsParts = smsManager.divideMessage(smsBody.toString());
+            ArrayList<PendingIntent> pendingIntents = new ArrayList<>();
+            ArrayList<PendingIntent> deliveredIntents = new ArrayList<>();
+            for(String part : smsParts){
+                pendingIntents.add(sentPI);
+                deliveredIntents.add(deliveredPI);
+            }
+            smsManager.sendMultipartTextMessage(phoneNumber, null, smsParts, pendingIntents, deliveredIntents);
+            //smsManager.sendTextMessage(phoneNumber, null, smsParts, sentPI, deliveredPI);
         }
     }
 
