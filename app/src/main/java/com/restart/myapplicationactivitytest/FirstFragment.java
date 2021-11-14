@@ -21,6 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
@@ -46,8 +47,7 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+            Bundle savedInstanceState) {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         this.handler = new EventsHandler(getActivity());
@@ -233,6 +233,20 @@ public class FirstFragment extends Fragment {
         serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
         serviceIntent.setAction(Constants.ACTION_SERVICE_CONNECTION_STATUS);
         ContextCompat.startForegroundService(getActivity(), serviceIntent);
+        if (MainActivity.lastBatteryLevel != -1) {
+            setLastUIState();
+        }
+    }
+
+    private void setLastUIState() {
+        TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
+        updateLabel(txtBattery, String.format("%.0f %%", MainActivity.lastBatteryLevel));
+        TextView txtBpm = (TextView)getActivity().findViewById(R.id.txt_bpm);
+        updateLabel(txtBpm, String.valueOf(MainActivity.lastBpm));
+        TextView txtHrv = (TextView)getActivity().findViewById(R.id.txt_hrv);
+        updateLabel(txtHrv, String.valueOf(MainActivity.lastHrv));
+        TextView txtEda = (TextView)getActivity().findViewById(R.id.txt_eda);
+        updateLabel(txtEda, String.valueOf(MainActivity.lastEda));
     }
 
     public EventsHandler getHandler(){
@@ -261,6 +275,7 @@ public class FirstFragment extends Fragment {
                     case Constants.EDA:
                         TextView txtEDA =(TextView) getActivity().findViewById(R.id.txt_eda);
                         if( txtEDA != null && value != null && value != -1 ) {
+                            MainActivity.lastEda = value;
                             updateLabel(txtEDA, value.toString());
                             updateProgress(value);
                             handler.onEDAUpdate(value);
@@ -269,18 +284,21 @@ public class FirstFragment extends Fragment {
                     case Constants.BPM:
                         TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
                         if(txtBpm != null && value != null && value != -1) {
+                            MainActivity.lastBpm = value;
                             updateLabel(txtBpm, value.toString());
                         }
                         break;
                     case Constants.HRV:
                         TextView txtHRV = (TextView)getActivity().findViewById(R.id.txt_hrv);
                         if( txtHRV != null && value != null && value != -1) {
+                            MainActivity.lastHrv = value;
                             updateLabel(txtHRV, value.toString());
                         }
                         break;
                     case Constants.BATTERY:
                         TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
                         if(txtBattery != null && value != null && value != -1) {
+                            MainActivity.lastBatteryLevel = value;
                             updateLabel(txtBattery, String.format("%.0f %%", value));
                         }
                         break;
@@ -298,8 +316,8 @@ public class FirstFragment extends Fragment {
             }
         };
 
-
-        this.getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
+        LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
+//        this.getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
     }
     private void showDisconnect(){
         ImageView disConnectedIcon =(ImageView)getActivity().findViewById(R.id.img_disconnected);

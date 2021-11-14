@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amplifyframework.AmplifyException;
@@ -398,8 +399,8 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         Intent updateIntent = new Intent(Constants.EMPATICA_MONITOR);
         updateIntent.putExtra(Constants.EMPATICA_PARAM,param);
         updateIntent.putExtra(Constants.EMPATICA_VALUE,value);
-
-        this.sendBroadcast(updateIntent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(updateIntent);
+//        this.sendBroadcast(updateIntent);
     }
 
     @Override
