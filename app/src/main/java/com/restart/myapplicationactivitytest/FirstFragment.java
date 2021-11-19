@@ -240,14 +240,19 @@ public class FirstFragment extends Fragment {
     }
 
     private void setLastUIState() {
-        TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
-        updateLabel(txtBattery, String.format("%.0f %%", MainActivity.lastBatteryLevel));
-        TextView txtBpm = (TextView)getActivity().findViewById(R.id.txt_bpm);
-        updateLabel(txtBpm, String.valueOf(MainActivity.lastBpm));
-        TextView txtHrv = (TextView)getActivity().findViewById(R.id.txt_hrv);
-        updateLabel(txtHrv, String.valueOf(MainActivity.lastHrv));
-        TextView txtEda = (TextView)getActivity().findViewById(R.id.txt_eda);
-        updateLabel(txtEda, String.valueOf(MainActivity.lastEda));
+        try {
+            TextView txtBattery = (TextView) getActivity().findViewById(R.id.txt_battery);
+            updateLabel(txtBattery, String.format("%.0f %%", MainActivity.lastBatteryLevel));
+            TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
+            updateLabel(txtBpm, String.valueOf(MainActivity.lastBpm));
+            TextView txtHrv = (TextView) getActivity().findViewById(R.id.txt_hrv);
+            updateLabel(txtHrv, String.valueOf(MainActivity.lastHrv));
+            TextView txtEda = (TextView) getActivity().findViewById(R.id.txt_eda);
+            updateLabel(txtEda, String.valueOf(MainActivity.lastEda));
+        }
+        catch (Exception ex){
+            Log.e("First Fragment", "setLastUI failed with error: " + ex.getLocalizedMessage());
+        }
     }
 
     public EventsHandler getHandler(){
@@ -272,6 +277,10 @@ public class FirstFragment extends Fragment {
                 try{
                     String param = intent.getStringExtra(Constants.EMPATICA_PARAM);
                     Float value = intent.getFloatExtra(Constants.EMPATICA_VALUE, -1);
+
+                    if(param == null){
+                        return;
+                    }
 
                     switch (param) {
                         case Constants.EDA:
@@ -326,38 +335,48 @@ public class FirstFragment extends Fragment {
 //        this.getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
     }
     private void showDisconnect(){
-        ImageView disConnectedIcon =(ImageView)getActivity().findViewById(R.id.img_disconnected);
-        ImageView connectedIcon = (ImageView)getActivity().findViewById(R.id.img_connected);
+        try {
+            ImageView disConnectedIcon = (ImageView) getActivity().findViewById(R.id.img_disconnected);
+            ImageView connectedIcon = (ImageView) getActivity().findViewById(R.id.img_connected);
 
-        if( connectedIcon != null && disConnectedIcon != null ) {
-            connectedIcon.setVisibility(View.INVISIBLE);
-            disConnectedIcon.setVisibility(View.VISIBLE);
-            disConnectedIcon.startAnimation(getAnimation());
+            if (connectedIcon != null && disConnectedIcon != null) {
+                connectedIcon.setVisibility(View.INVISIBLE);
+                disConnectedIcon.setVisibility(View.VISIBLE);
+                disConnectedIcon.startAnimation(getAnimation());
 
-            if(!this.isInitial) {
-                String defRingtone = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.disconnected;
-                this.disconectedRingtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(defRingtone));
-                disconectedRingtone.setVolume(90);
-                disconectedRingtone.play();
-                disconectedRingtone.setLooping(true);
+                if (!this.isInitial) {
+                    String defRingtone = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.disconnected;
+                    this.disconectedRingtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(defRingtone));
+                    disconectedRingtone.setVolume(90);
+                    disconectedRingtone.play();
+                    disconectedRingtone.setLooping(true);
+                }
             }
+        }
+        catch (Exception e){
+            Log.e("First Fragment", "show disconnected failed with error: " + e.getLocalizedMessage());
         }
 
     }
 
     private void showConnected(){
-        ImageView disConnectedIcon =(ImageView)getActivity().findViewById(R.id.img_disconnected);
-        ImageView connectedIcon = (ImageView)getActivity().findViewById(R.id.img_connected);
-        if( connectedIcon != null && disConnectedIcon != null ) {
-            if(this.disconectedRingtone != null && this.disconectedRingtone.isPlaying()){
-                this.disconectedRingtone.stop();
+        try {
+            ImageView disConnectedIcon = (ImageView) getActivity().findViewById(R.id.img_disconnected);
+            ImageView connectedIcon = (ImageView) getActivity().findViewById(R.id.img_connected);
+            if (connectedIcon != null && disConnectedIcon != null) {
+                if (this.disconectedRingtone != null && this.disconectedRingtone.isPlaying()) {
+                    this.disconectedRingtone.stop();
+                }
+                this.isInitial = false;
+                connectedIcon.setVisibility(View.VISIBLE);
+                disConnectedIcon.setVisibility(View.INVISIBLE);
+                if (disConnectedIcon.getAnimation() != null) {
+                    disConnectedIcon.getAnimation().cancel();
+                }
             }
-            this.isInitial = false;
-            connectedIcon.setVisibility(View.VISIBLE);
-            disConnectedIcon.setVisibility(View.INVISIBLE);
-            if (disConnectedIcon.getAnimation() != null) {
-                disConnectedIcon.getAnimation().cancel();
-            }
+        }
+        catch (Exception e) {
+            Log.e("First Fragment", "show connectee failed with error: " + e.getLocalizedMessage());
         }
     }
     // Update a label with some text, making sure this is run in the UI thread
