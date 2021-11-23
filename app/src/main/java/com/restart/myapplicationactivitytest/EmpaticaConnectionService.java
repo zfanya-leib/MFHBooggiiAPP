@@ -72,11 +72,10 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private AtomicBoolean scanningComplete = new AtomicBoolean(false);
 
     private static EmpaticaConnectionService _instance = null;
-    private EmpaStatus connectionStatus = EmpaStatus.INITIAL;
+    public static EmpaStatus connectionStatus = EmpaStatus.INITIAL;
     private EmpaDeviceManager deviceManager = null;
     private final ReentrantLock lock = new ReentrantLock();
     private String userName = null;
-    private List<Measurement> measurements = new ArrayList<Measurement>(1001);
     static final int DEFAULT_THREAD_POOL_SIZE = 4;
     static final DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 

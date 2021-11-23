@@ -92,9 +92,9 @@ public class EventsHandler implements LocationListener {
     public void setLocation(LocationType location){
         this.location = location;
         if (location == LocationType.OUTDOOR){
-            writeStartEventToDb("outside");
+            writeStartEventToDb(Constants.OUTSIDE);
         } else {
-            writeEndEventToDb("outside");
+            writeEndEventToDb(Constants.OUTSIDE);
         }
     }
 

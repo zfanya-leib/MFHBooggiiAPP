@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -24,7 +25,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 
+import com.empatica.empalink.config.EmpaStatus;
 import com.restart.myapplicationactivitytest.databinding.FragmentFirstBinding;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -81,9 +84,11 @@ public class FirstFragment extends Fragment {
         binding.btnImgIndoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String eventName = "outside"; // The report to db is only is_outside
+                final String eventName = Constants.OUTSIDE; // The report to db is only is_outside
                 if (v.isSelected() == false) {
                     v.setSelected(true);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    preferences.edit().putBoolean(Constants.OUTSIDE, false).apply();
                     v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
                     binding.btnImgOutdoor.setSelected(false);
                     binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
@@ -96,10 +101,12 @@ public class FirstFragment extends Fragment {
         binding.btnImgOutdoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String eventName = "outside";
+                final String eventName = Constants.OUTSIDE;
                 if (v.isSelected() == false) {
                     v.setSelected(true);
                     v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    preferences.edit().putBoolean(Constants.OUTSIDE, true).apply();
                     binding.btnImgIndoor.setSelected(false);
                     binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
                     handler.writeStartEventToDb(eventName);
@@ -114,10 +121,14 @@ public class FirstFragment extends Fragment {
                 v.setRotation(v.getRotation() + 45);
                 if (v.isSelected() == false) {
                     v.setSelected(true);
-                    handler.writeStartEventToDb("interventionNeeded");
+                    handler.writeStartEventToDb(Constants.INTERVENTION_NEEDED);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    preferences.edit().putBoolean(Constants.INTERVENTION_NEEDED, true).apply();
                 } else {
                     v.setSelected(false);
-                    handler.writeEndEventToDb("interventionNeeded");
+                    handler.writeEndEventToDb(Constants.INTERVENTION_NEEDED);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    preferences.edit().putBoolean(Constants.INTERVENTION_NEEDED, false).apply();
                 }
             }
         });
@@ -128,38 +139,14 @@ public class FirstFragment extends Fragment {
                 v.setRotation(v.getRotation() + 45);
                 if (v.isSelected() == false) {
                     v.setSelected(true);
-                    handler.writeStartEventToDb("majorEvent");
+                    handler.writeStartEventToDb(Constants.MAJOR_EVENT);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    preferences.edit().putBoolean(Constants.MAJOR_EVENT, true).apply();
                 } else {
                     v.setSelected(false);
-                    handler.writeEndEventToDb("majorEvent");
-                }
-            }
-        });
-
-        binding.btnImgInterventionNeeded.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setRotation(v.getRotation() + 45);
-                if (v.isSelected() == false) {
-                    v.setSelected(true);
-                    handler.writeStartEventToDb("interventionNeeded");
-                } else {
-                    v.setSelected(false);
-                    handler.writeEndEventToDb("interventionNeeded");
-                }
-            }
-        });
-
-        binding.btnImgSevereAttack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setRotation(v.getRotation() + 45);
-                if (v.isSelected() == false) {
-                    v.setSelected(true);
-                    handler.writeStartEventToDb("majorEvent");
-                } else {
-                    v.setSelected(false);
-                    handler.writeEndEventToDb("majorEvent");
+                    handler.writeEndEventToDb(Constants.MAJOR_EVENT);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    preferences.edit().putBoolean(Constants.MAJOR_EVENT, false).apply();
                 }
             }
         });
@@ -234,21 +221,45 @@ public class FirstFragment extends Fragment {
         serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
         serviceIntent.setAction(Constants.ACTION_SERVICE_CONNECTION_STATUS);
         ContextCompat.startForegroundService(getActivity(), serviceIntent);
-        if (MainActivity.lastBatteryLevel != -1) {
+        if (EmpaticaConnectionService.connectionStatus == EmpaStatus.CONNECTED)
             setLastUIState();
-        }
     }
 
     private void setLastUIState() {
         try {
-            TextView txtBattery = (TextView) getActivity().findViewById(R.id.txt_battery);
-            updateLabel(txtBattery, String.format("%.0f %%", MainActivity.lastBatteryLevel));
-            TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
-            updateLabel(txtBpm, String.valueOf(MainActivity.lastBpm));
-            TextView txtHrv = (TextView) getActivity().findViewById(R.id.txt_hrv);
-            updateLabel(txtHrv, String.valueOf(MainActivity.lastHrv));
-            TextView txtEda = (TextView) getActivity().findViewById(R.id.txt_eda);
-            updateLabel(txtEda, String.valueOf(MainActivity.lastEda));
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            Boolean isOutside = preferences.getBoolean(Constants.OUTSIDE, false);
+            binding.btnImgIndoor.setSelected(!isOutside);
+            binding.btnImgOutdoor.setSelected(isOutside);
+            if (isOutside) {
+                binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+            } else {
+                binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+            }
+            Boolean isInterventionNeeded = preferences.getBoolean(Constants.INTERVENTION_NEEDED, false);
+            binding.btnImgInterventionNeeded.setSelected(isInterventionNeeded);
+            if (isInterventionNeeded)
+                binding.btnImgInterventionNeeded.setRotation(binding.btnImgInterventionNeeded.getRotation() + 45);
+            Boolean isMajorEvent = preferences.getBoolean(Constants.MAJOR_EVENT, false);
+            binding.btnImgSevereAttack.setSelected(isMajorEvent);
+            if (isMajorEvent)
+                binding.btnImgSevereAttack.setRotation(binding.btnImgSevereAttack.getRotation() + 45);
+
+            TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
+            Log.i("setLastUIState","preferences battery: " + preferences.getString(Constants.BATTERY, "---"));
+            String batteryLevel = preferences.getString(Constants.BATTERY, "---");
+            updateLabel(txtBattery, batteryLevel);
+            TextView txtBpm = (TextView)getActivity().findViewById(R.id.txt_bpm);
+            String bpm = preferences.getString(Constants.BPM, "---");
+            updateLabel(txtBpm, bpm);
+            TextView txtHrv = (TextView)getActivity().findViewById(R.id.txt_hrv);
+            String hrv = preferences.getString(Constants.HRV, "---");
+            updateLabel(txtHrv, hrv);
+            TextView txtEda = (TextView)getActivity().findViewById(R.id.txt_eda);
+            String eda = preferences.getString(Constants.EDA, "---");
+            updateLabel(txtEda, eda);
         }
         catch (Exception ex){
             Log.e("First Fragment", "setLastUI failed with error: " + ex.getLocalizedMessage());
@@ -286,7 +297,8 @@ public class FirstFragment extends Fragment {
                         case Constants.EDA:
                             TextView txtEDA =(TextView) getActivity().findViewById(R.id.txt_eda);
                             if( txtEDA != null && value != null && value != -1 ) {
-                                MainActivity.lastEda = value;
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                preferences.edit().putString(Constants.EDA, value.toString()).apply();
                                 updateLabel(txtEDA, value.toString());
                                 updateProgress(value);
                                 handler.onEDAUpdate(value);
@@ -295,30 +307,37 @@ public class FirstFragment extends Fragment {
                         case Constants.BPM:
                             TextView txtBpm = (TextView) getActivity().findViewById(R.id.txt_bpm);
                             if(txtBpm != null && value != null && value != -1) {
-                                MainActivity.lastBpm = value;
-                                updateLabel(txtBpm, value.toString());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                preferences.edit().putString(Constants.BPM, String.valueOf(value.intValue())).apply();
+                                updateLabel(txtBpm, String.valueOf(value.intValue()));
                             }
                             break;
                         case Constants.HRV:
                             TextView txtHRV = (TextView)getActivity().findViewById(R.id.txt_hrv);
                             if( txtHRV != null && value != null && value != -1) {
-                                MainActivity.lastHrv = value;
-                                updateLabel(txtHRV, value.toString());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                preferences.edit().putString(Constants.HRV, String.valueOf(value.intValue())).apply();
+                                updateLabel(txtHRV, String.valueOf(value.intValue()));
                             }
                             break;
                         case Constants.BATTERY:
+                            Log.i("First Fragment","preferences battery: " + String.format("%.0f %%", value));
                             TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
                             if(txtBattery != null && value != null && value != -1) {
-                                MainActivity.lastBatteryLevel = value;
-                                updateLabel(txtBattery, String.format("%.0f %%", value));
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                preferences.edit().putString(Constants.BATTERY, String.valueOf(value.intValue()).concat("%")).apply();
+                                updateLabel(txtBattery, String.valueOf(value.intValue()).concat("%"));
+                                Log.i("First Fragment","preferences battery: " + preferences.getString(Constants.BATTERY, "---"));
                             }
                             break;
                         case Constants.BLUETOOTH:
                             BluetoothAdapter.getDefaultAdapter().enable();
                             break;
                         case Constants.DISCONNECTED:
-                            if(!isInitial)
+                            resetMeasurements();
+                            if(!isInitial) {
                                 showDisconnect();
+                            }
                             break;
                         case Constants.CONNECTED:
                             showConnected();
@@ -334,6 +353,23 @@ public class FirstFragment extends Fragment {
         LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
 //        this.getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Constants.EMPATICA_MONITOR));
     }
+
+    private void resetMeasurements() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        preferences.edit().putString(Constants.EDA, "---").apply();
+        TextView txtEda =(TextView) getActivity().findViewById(R.id.txt_eda);
+        updateLabel(txtEda, "---");
+        preferences.edit().putString(Constants.BPM, "---").apply();
+        TextView txtBPM =(TextView) getActivity().findViewById(R.id.txt_bpm);
+        updateLabel(txtBPM, "---");
+        preferences.edit().putString(Constants.HRV, "---").apply();
+        TextView txtHrv =(TextView) getActivity().findViewById(R.id.txt_hrv);
+        updateLabel(txtHrv, "---");
+        preferences.edit().putString(Constants.BATTERY, "---").apply();
+        TextView txtBATTERY =(TextView) getActivity().findViewById(R.id.txt_battery);
+        updateLabel(txtBATTERY, "---");
+    }
+
     private void showDisconnect(){
         try {
             ImageView disConnectedIcon = (ImageView) getActivity().findViewById(R.id.img_disconnected);

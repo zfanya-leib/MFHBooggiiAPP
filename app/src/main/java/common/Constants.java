@@ -31,6 +31,17 @@ public class Constants {
     public static final String DISCONNECTED = "DISCONNECTED";
     public static final String CONNECTED = "CONNECTED";
 
-
-
+    public static final String OUTSIDE = "outside";
+    public static final String INTERVENTION_NEEDED = "interventionNeeded";
+    public static final String MAJOR_EVENT = "majorEvent";
+    public static final String IN_CAR = "inCar";
+    public static final String CLOSED_SPACE = "closedSpace";
+    public static final String CROWDED = "crowded";
+    public static final String DRIVING = "driving";
+    public static final String MEDIA = "media";
+    public static final String LAY_DOWN = "layDown";
+    public static final String SLEEPING = "sleeping";
+    public static final String WALKING = "walking";
+    public static final String MEDICATION = "medication";
+    public static final String WAKE_UP = "wakeUp";
 }

@@ -35,10 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
-    public static float lastBatteryLevel = -1;
-    public static float lastBpm = -1;
-    public static float lastHrv = -1;
-    public static float lastEda = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
