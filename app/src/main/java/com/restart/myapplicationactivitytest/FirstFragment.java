@@ -89,7 +89,7 @@ public class FirstFragment extends Fragment {
                     v.setSelected(true);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     preferences.edit().putBoolean(Constants.OUTSIDE, false).apply();
-                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
                     binding.btnImgOutdoor.setSelected(false);
                     binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
                     handler.writeEndEventToDb(eventName);
@@ -104,7 +104,7 @@ public class FirstFragment extends Fragment {
                 final String eventName = Constants.OUTSIDE;
                 if (v.isSelected() == false) {
                     v.setSelected(true);
-                    v.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     preferences.edit().putBoolean(Constants.OUTSIDE, true).apply();
                     binding.btnImgIndoor.setSelected(false);
@@ -118,14 +118,15 @@ public class FirstFragment extends Fragment {
         binding.btnImgInterventionNeeded.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.setRotation(v.getRotation() + 45);
                 if (v.isSelected() == false) {
                     v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
                     handler.writeStartEventToDb(Constants.INTERVENTION_NEEDED);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     preferences.edit().putBoolean(Constants.INTERVENTION_NEEDED, true).apply();
                 } else {
                     v.setSelected(false);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.white));
                     handler.writeEndEventToDb(Constants.INTERVENTION_NEEDED);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     preferences.edit().putBoolean(Constants.INTERVENTION_NEEDED, false).apply();
@@ -136,14 +137,15 @@ public class FirstFragment extends Fragment {
         binding.btnImgSevereAttack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.setRotation(v.getRotation() + 45);
                 if (v.isSelected() == false) {
                     v.setSelected(true);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
                     handler.writeStartEventToDb(Constants.MAJOR_EVENT);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     preferences.edit().putBoolean(Constants.MAJOR_EVENT, true).apply();
                 } else {
                     v.setSelected(false);
+                    v.setBackgroundTintList(getResources().getColorStateList(R.color.white));
                     handler.writeEndEventToDb(Constants.MAJOR_EVENT);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                     preferences.edit().putBoolean(Constants.MAJOR_EVENT, false).apply();
@@ -221,32 +223,14 @@ public class FirstFragment extends Fragment {
         serviceIntent.putExtra("inputExtra", "Empatica Connection Service");
         serviceIntent.setAction(Constants.ACTION_SERVICE_CONNECTION_STATUS);
         ContextCompat.startForegroundService(getActivity(), serviceIntent);
+        setLastButtonsState();
         if (EmpaticaConnectionService.connectionStatus == EmpaStatus.CONNECTED)
-            setLastUIState();
+            setLastMeasurements();
     }
 
-    private void setLastUIState() {
+    private void setLastMeasurements() {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            Boolean isOutside = preferences.getBoolean(Constants.OUTSIDE, false);
-            binding.btnImgIndoor.setSelected(!isOutside);
-            binding.btnImgOutdoor.setSelected(isOutside);
-            if (isOutside) {
-                binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
-                binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
-            } else {
-                binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
-                binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
-            }
-            Boolean isInterventionNeeded = preferences.getBoolean(Constants.INTERVENTION_NEEDED, false);
-            binding.btnImgInterventionNeeded.setSelected(isInterventionNeeded);
-            if (isInterventionNeeded)
-                binding.btnImgInterventionNeeded.setRotation(binding.btnImgInterventionNeeded.getRotation() + 45);
-            Boolean isMajorEvent = preferences.getBoolean(Constants.MAJOR_EVENT, false);
-            binding.btnImgSevereAttack.setSelected(isMajorEvent);
-            if (isMajorEvent)
-                binding.btnImgSevereAttack.setRotation(binding.btnImgSevereAttack.getRotation() + 45);
-
             TextView txtBattery = (TextView)getActivity().findViewById(R.id.txt_battery);
             Log.i("setLastUIState","preferences battery: " + preferences.getString(Constants.BATTERY, "---"));
             String batteryLevel = preferences.getString(Constants.BATTERY, "---");
@@ -260,6 +244,33 @@ public class FirstFragment extends Fragment {
             TextView txtEda = (TextView)getActivity().findViewById(R.id.txt_eda);
             String eda = preferences.getString(Constants.EDA, "---");
             updateLabel(txtEda, eda);
+        }
+        catch (Exception ex){
+            Log.e("First Fragment", "setLastUI failed with error: " + ex.getLocalizedMessage());
+        }
+    }
+
+    private void setLastButtonsState() {
+        try {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            Boolean isOutside = preferences.getBoolean(Constants.OUTSIDE, false);
+            binding.btnImgIndoor.setSelected(!isOutside);
+            binding.btnImgOutdoor.setSelected(isOutside);
+            if (isOutside) {
+                binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
+                binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+            } else {
+                binding.btnImgIndoor.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
+                binding.btnImgOutdoor.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+            }
+            Boolean isInterventionNeeded = preferences.getBoolean(Constants.INTERVENTION_NEEDED, false);
+            binding.btnImgInterventionNeeded.setSelected(isInterventionNeeded);
+            if (isInterventionNeeded)
+                binding.btnImgInterventionNeeded.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
+            Boolean isMajorEvent = preferences.getBoolean(Constants.MAJOR_EVENT, false);
+            binding.btnImgSevereAttack.setSelected(isMajorEvent);
+            if (isMajorEvent)
+                binding.btnImgSevereAttack.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
         }
         catch (Exception ex){
             Log.e("First Fragment", "setLastUI failed with error: " + ex.getLocalizedMessage());

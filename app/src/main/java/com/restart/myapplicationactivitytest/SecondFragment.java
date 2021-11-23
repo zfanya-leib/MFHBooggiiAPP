@@ -175,7 +175,7 @@ public class SecondFragment extends Fragment {
     private void setButtonSelection(View btn, Boolean isSelected) {
         btn.setSelected(isSelected);
         if (isSelected)
-            btn.setBackgroundTintList(getResources().getColorStateList(R.color.sign_in_separator_color));
+            btn.setBackgroundTintList(getResources().getColorStateList(R.color.green_background));
         else
             btn.setBackgroundTintList(getResources().getColorStateList(R.color.white));
     }
