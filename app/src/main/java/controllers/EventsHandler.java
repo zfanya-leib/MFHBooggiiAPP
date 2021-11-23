@@ -31,7 +31,6 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
@@ -69,6 +68,7 @@ public class EventsHandler implements LocationListener {
     private MediaController mediaController;
     private boolean videoToggle = false;
     private Ringtone sosRingtone;
+    private Ringtone drugAudio;
     private LocationManager locationManager;
     private Vibrator vibrator;
     private ArrayList<Integer> videoArr=new ArrayList<>();
@@ -276,6 +276,9 @@ public class EventsHandler implements LocationListener {
     }
 
     private void setRingtone() {
+        if(this.drugAudio != null && this.drugAudio.isPlaying()){
+            this.drugAudio.stop();
+        }
         String defRingtone ="android.resource://" + this.currentActivity.getPackageName() + "/" + R.raw.emergency_alarm;
 
         SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
@@ -520,8 +523,26 @@ public class EventsHandler implements LocationListener {
     }
 
     public void onDrugTaken(){
-        if(this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation() != null)
+        if(this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation() != null) {
             this.currentActivity.findViewById(R.id.img_btn_drug).getAnimation().cancel();
+
+            SharedPreferences prefs = this.currentActivity.getApplication().getSharedPreferences(Constants.SHARED_PREP_DATA,MODE_PRIVATE);
+            String defRingtone = prefs.getString(Constants.DRUG_MEDIA,"");
+            if(!defRingtone.isEmpty()) {
+                if(this.sosRingtone.isPlaying()){
+                    this.sosRingtone.stop();
+                }
+                Uri notification = Uri.parse(prefs.getString(Constants.DRUG_MEDIA, defRingtone));
+                this.drugAudio = RingtoneManager.getRingtone(this.currentActivity, notification);
+                this.drugAudio.setVolume(90);
+                this.drugAudio.play();
+            }
+        }
+        else{
+            if(this.drugAudio != null && this.drugAudio.isPlaying()){
+                this.drugAudio.stop();
+            }
+        }
     }
 
     private AlphaAnimation getAnimation(){

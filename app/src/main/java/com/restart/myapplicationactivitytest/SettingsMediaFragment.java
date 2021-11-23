@@ -96,15 +96,13 @@ public class SettingsMediaFragment extends Fragment {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
 
                             Intent data = result.getData();
-                            Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                            Uri uri = data.getData();
                             if( uri != null) {
                                 SharedPreferences.Editor prefsEdit = getActivity().getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE).edit();
 
                                 prefsEdit.putString(Constants.RINGTONE, uri.toString());
-                                txtRingtone.setText(uri.getQueryParameter("title"));
                                 prefsEdit.putBoolean(Constants.DEFAULT_RINGTONE, false);
                                 prefsEdit.apply();
                             }
@@ -115,9 +113,36 @@ public class SettingsMediaFragment extends Fragment {
         binding.btnSelectRingtone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent chooseFile = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/*");
                 ringtoneSelectionResult.launch(chooseFile);
+            }
+        });
+
+        ActivityResultLauncher<Intent> drugSelectionResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                            if( uri != null) {
+                                SharedPreferences.Editor prefsEdit = getActivity().getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE).edit();
+                                prefsEdit.putString(Constants.DRUG_MEDIA, uri.toString());
+                                prefsEdit.apply();
+                            }
+                        }
+                    }
+                });
+
+        binding.btnDrugMp3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("audio/*");
+                drugSelectionResult.launch(chooseFile);
             }
         });
 

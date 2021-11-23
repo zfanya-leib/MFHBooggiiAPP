@@ -10,6 +10,7 @@ public class Constants {
     public static final String PHONE_LOCATION_2 = "PHONE_LOCATION_2";
     public static final String EMERGENCY_SMS_TEXT = "EMERGENCY_SMS_TEXT";
     public static final String RINGTONE = "RINGTONE";
+    public static final String DRUG_MEDIA = "DRUG_MEDIA";
     public static final String DEFAULT_RINGTONE = "DEFAULT_RINGTONE";
     public static final String VIDEO = "VIDEO";
     public static final String DEFAULT_VIDEO = "DEFAULT_VIDEO";
