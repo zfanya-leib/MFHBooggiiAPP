@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
@@ -23,6 +24,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.OpenableColumns;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -43,6 +45,7 @@ import com.amplifyframework.core.model.temporal.Temporal;
 import com.amplifyframework.datastore.generated.model.Event;
 import com.restart.myapplicationactivitytest.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -279,6 +282,8 @@ public class EventsHandler implements LocationListener {
         if(this.drugAudio != null && this.drugAudio.isPlaying()){
             this.drugAudio.stop();
         }
+
+
         String defRingtone ="android.resource://" + this.currentActivity.getPackageName() + "/" + R.raw.emergency_alarm;
 
         SharedPreferences prefs = this.currentActivity.getSharedPreferences(Constants.SHARED_PREP_DATA, MODE_PRIVATE);
