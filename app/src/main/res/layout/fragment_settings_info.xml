@@ -8,206 +8,202 @@
     tools:context=".SettingsInfoFragment">
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_in_eda"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:hint="מקום סגור EDA"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toTopOf="parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_in_eda"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl"
-            android:inputType="number"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_outdoor_eda"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:hint="מקום פתוח EDA"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@+id/settings_in_eda">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_in_eda"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:hint="מקום סגור EDA"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_outdoor_eda"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_in_eda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_call1"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:hint="מספר חירום 1"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@+id/settings_outdoor_eda">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_outdoor_eda"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="מקום פתוח EDA"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_first_emg_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl"
-            android:inputType="phone"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_outdoor_eda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_call2"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        android:hint="מספר חירום 2"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@+id/settings_call1">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_call1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="מספר חירום 1"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_second_emg_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl"
-            android:inputType="phone"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_first_emg_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_location"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        android:gravity="start"
-        android:hint="מספר לשליחת מיקום בחירום 1"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@+id/settings_call2">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_call2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="מספר חירום 2"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_location_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl"
-            android:gravity="start"
-            android:inputType="phone"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_second_emg_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_location2"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        android:gravity="start"
-        android:hint="מספר לשליחת מיקום בחירום 2"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@+id/settings_location">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_location"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:hint="מספר לשליחת מיקום בחירום 1"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_location_number2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl"
-            android:gravity="start"
-            android:inputType="phone"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settings_emergency_sms"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layoutDirection="rtl"
-        android:textDirection="rtl"
-        android:gravity="start"
-        android:hint="הודעת סמס לשליחה בחירום"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@+id/settings_location2">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_location_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="phone"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txt_emergency_sms"
-            android:layout_width="match_parent"
-            android:layout_height="125dp"
-            android:gravity="start"
-            android:inputType="textMultiLine"
-            android:layoutDirection="rtl"
-            android:textDirection="rtl" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_location2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:hint="מספר לשליחת מיקום בחירום 2"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
 
-    <Button
-        android:id="@+id/btn_back_from_settings"
-        android:layout_width="150dp"
-        android:layout_height="66dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/white"
-        android:backgroundTintMode="add"
-        android:text="@string/back_btn"
-        android:textColor="@color/general_text"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_save"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_emergency_sms" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_location_number2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:inputType="phone"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_save"
-        android:layout_width="150dp"
-        android:layout_height="66dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/white"
-        android:backgroundTintMode="add"
-        android:text="@string/save_btn"
-        android:textColor="@color/general_text"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_back_from_settings"
-        app:layout_constraintTop_toTopOf="@+id/btn_back_from_settings" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settings_emergency_sms"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:hint="הודעת סמס לשליחה בחירום"
+                android:layoutDirection="rtl"
+                android:textDirection="rtl">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_emergency_sms"
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:gravity="start"
+                    android:inputType="textMultiLine"
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btn_back_from_settings"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:backgroundTint="@color/white"
+                    android:backgroundTintMode="add"
+                    android:text="@string/back_btn"
+                    android:textColor="@color/general_text"
+                    android:textSize="20sp" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="150dp"
+                    android:layout_height="66dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:backgroundTint="@color/white"
+                    android:backgroundTintMode="add"
+                    android:text="@string/save_btn"
+                    android:textColor="@color/general_text"
+                    android:textSize="20sp" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

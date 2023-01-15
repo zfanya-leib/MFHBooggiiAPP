@@ -10,8 +10,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,20 +42,15 @@ import com.empatica.empalink.delegate.EmpaDataDelegate;
 import com.empatica.empalink.delegate.EmpaStatusDelegate;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 import common.Constants;
 import services.Streamer;
@@ -66,7 +59,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
     private static final String TAG = "EmpaticaService";
     public static final String CHANNEL_ID = "EmpaticaServiceChannel";
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
-    private static final String EMPATICA_API_KEY = "1a25b9decfbd48cb9c833e0a09851279";
+    private static final String EMPATICA_API_KEY = "9e6a8e25f3944a9c99815806dc1d26a8";
     private final int max_last_ibi_samples_to_cache = 15;
     private Stack<Float> ibiArray = new SizedStack<Float>(max_last_ibi_samples_to_cache);
     private AtomicBoolean scanningComplete = new AtomicBoolean(false);
@@ -121,7 +114,7 @@ public class EmpaticaConnectionService extends Service implements EmpaDataDelega
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
+                0, notificationIntent, PendingIntent.FLAG_MUTABLE);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("booggii et")
                 .setContentText("Empatica Connection Service")

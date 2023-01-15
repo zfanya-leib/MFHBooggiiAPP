@@ -1,8 +1,8 @@
 package controllers;
 
-import android.Manifest;
-import androidx.annotation.NonNull;
+import static android.content.Context.MODE_PRIVATE;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.Color;
@@ -24,7 +22,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.provider.OpenableColumns;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -45,20 +42,14 @@ import com.amplifyframework.core.model.temporal.Temporal;
 import com.amplifyframework.datastore.generated.model.Event;
 import com.restart.myapplicationactivitytest.R;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Random;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import common.Constants;
 import common.LocationType;
 import common.State;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class EventsHandler implements LocationListener {
     private final String TAG = "EventsHandler";
@@ -348,9 +339,9 @@ public class EventsHandler implements LocationListener {
             smsBody.append(",");
             smsBody.append(currentLocation.getLongitude());
 
-            PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS SENT"), 0);
+            PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS SENT"), PendingIntent.FLAG_MUTABLE);
 
-            PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS DELIVERED"), 0);
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS DELIVERED"), PendingIntent.FLAG_MUTABLE);
 
             currentActivity.registerReceiver(new BroadcastReceiver() {
                 @Override
@@ -427,9 +418,9 @@ public class EventsHandler implements LocationListener {
             smsBody.append(",");
             smsBody.append(currentLocation.getLongitude());
 
-            PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS SENT2"), 0);
+            PendingIntent sentPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS SENT2"), PendingIntent.FLAG_MUTABLE);
 
-            PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS DELIVERED2"), 0);
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0, new Intent("SMS DELIVERED2"), PendingIntent.FLAG_MUTABLE);
 
             currentActivity.registerReceiver(new BroadcastReceiver() {
                 @Override
